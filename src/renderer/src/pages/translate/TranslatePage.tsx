@@ -1,7 +1,6 @@
 import { CheckOutlined, SendOutlined, SettingOutlined, SwapOutlined, WarningOutlined } from '@ant-design/icons'
 import { Navbar, NavbarCenter } from '@renderer/components/app/Navbar'
 import CopyIcon from '@renderer/components/Icons/CopyIcon'
-import SettingsPopup from '@renderer/components/Popups/SettingsPopup'
 import { isLocalAi } from '@renderer/config/env'
 import { TranslateLanguageOptions } from '@renderer/config/translate'
 import db from '@renderer/databases'
@@ -91,10 +90,9 @@ const TranslatePage: FC = () => {
 
     if (translateModel) {
       return (
-        <SettingsPopup
-          activeTab="model"
-          actionButton={<Button type="text" shape="circle" icon={<SettingOutlined />} />}
-        />
+        <Link to="/settings/model" style={{ color: 'var(--color-text-2)' }}>
+          <SettingOutlined />
+        </Link>
       )
     }
 
