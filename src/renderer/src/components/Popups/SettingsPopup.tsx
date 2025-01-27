@@ -8,16 +8,8 @@ interface Props {
   activeTab?: SettingsTab
 }
 
-const SettingsPopup: FC<Props> = (props) => {
+const SettingsPopup: FC<Props> = ({ actionButton, activeTab }) => {
   const [open, setOpen] = useState(false)
-  const [activeTab, setActiveTab] = useState<SettingsTab | undefined>(props.activeTab)
-
-  const onOpen = () => {
-    if (props.activeTab) {
-      setActiveTab(props.activeTab)
-    }
-    setOpen(true)
-  }
 
   const onCancel = () => {
     setOpen(false)
@@ -25,7 +17,7 @@ const SettingsPopup: FC<Props> = (props) => {
 
   return (
     <>
-      <div onClick={onOpen}>{props.actionButton}</div>
+      <div onClick={() => setOpen(true)}>{actionButton}</div>
       <GlobalStyle />
       <StyledModal
         transitionName="ant-move-down"
@@ -34,7 +26,7 @@ const SettingsPopup: FC<Props> = (props) => {
         open={open}
         onCancel={onCancel}
         footer={null}>
-        <SettingsPage activeTab={activeTab} onTabChange={setActiveTab} />
+        <SettingsPage activeTab={activeTab} />
       </StyledModal>
     </>
   )
@@ -56,6 +48,7 @@ const StyledModal = styled(Modal)`
     padding: 0;
     overflow: hidden;
     border-radius: 12px;
+    /* border: 0.5px solid var(--color-border); */
   }
   .ant-modal-close {
     top: 4px;
