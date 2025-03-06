@@ -68,7 +68,8 @@
       "collapse": "收起",
       "manage": "管理",
       "select_model": "選擇模型",
-      "show.all": "顯示全部"
+      "show.all": "顯示全部",
+      "update_available": "有可用更新"
     },
     "chat": {
       "add.assistant.title": "添加助手",
@@ -480,6 +481,11 @@
       "websearch": "網路搜索",
       "edit": "編輯模型"
     },
+    "navbar": {
+      "expand": "伸縮對話框",
+      "show_sidebar": "顯示側邊欄",
+      "hide_sidebar": "隱藏側邊欄"
+    },
     "ollama": {
       "keep_alive_time.description": "對話後模型在記憶體中保持的時間（預設為 5 分鐘）。",
       "keep_alive_time.placeholder": "分鐘",
@@ -599,8 +605,9 @@
         "app_data": "應用數據",
         "app_logs": "應用日誌",
         "app_knowledge": "知識庫文件",
-        "app_knowledge.remove_all": "刪除文件",
-        "app_knowledge.remove_all_confirm": "刪除知識庫文件不會刪除知識庫本身，可以減少存儲空間占用，刪除之後文件無法再打開，是否繼續？",
+        "app_knowledge.button.delete": "刪除文件",
+        "app_knowledge.remove_all": "刪除知識庫文件",
+        "app_knowledge.remove_all_confirm": "刪除知識庫文件可以减少存储空间占用，但不会删除知识库向量化数据，删除之后将无法打开源文件，是否删除？",
         "app_knowledge.remove_all_success": "文件刪除成功",
         "clear_cache": {
           "button": "清除緩存",
@@ -857,7 +864,35 @@
         "search_max_result": "搜索結果個數",
         "search_result_default": "預設"
       },
-      "display.assistant.title": "助手設定"
+      "display.assistant.title": "助手設定",
+      "mcp": {
+        "title": "MCP 伺服器",
+        "config_description": "配置模型上下文協議伺服器",
+        "description": "描述",
+        "addServer": "新增伺服器",
+        "editServer": "編輯伺服器",
+        "name": "名稱",
+        "type": "類型",
+        "url": "URL",
+        "command": "指令",
+        "args": "參數",
+        "argsTooltip": "每個參數佔一行",
+        "env": "環境變數",
+        "envTooltip": "格式：KEY=value，每行一個",
+        "active": "啟用",
+        "actions": "操作",
+        "noServers": "未配置伺服器",
+        "nameRequired": "請輸入伺服器名稱",
+        "commandRequired": "請輸入指令",
+        "confirmDelete": "刪除伺服器",
+        "confirmDeleteMessage": "您確定要刪除該伺服器嗎？",
+        "addSuccess": "伺服器新增成功",
+        "updateSuccess": "伺服器更新成功",
+        "deleteSuccess": "伺服器刪除成功",
+        "duplicateName": "已存在同名伺服器",
+        "serverSingular": "伺服器",
+        "serverPlural": "伺服器"
+      }
     },
     "translate": {
       "any.language": "任意語言",
@@ -901,7 +936,7 @@
       "title": "資料備份",
       "confirm": "確定要備份資料嗎？",
       "confirm.button": "選擇備份位置",
-      "content": "備份操作將涵蓋所有應用資料，包括聊天記錄、設定、知識庫等全部資料。請注意，備份過程可能需要一些時間，感謝您的耐心等待。",
+      "content": "備份全部資料，包括聊天記錄、設定、知識庫等全部資料。請注意，備份過程可能需要一些時間，感謝您的耐心等待。",
       "progress": {
         "title": "備份進度",
         "preparing": "準備備份...",

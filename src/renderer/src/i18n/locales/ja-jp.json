@@ -68,7 +68,8 @@
       "collapse": "折りたたむ",
       "manage": "管理",
       "select_model": "モデルを選択",
-      "show.all": "すべて表示"
+      "show.all": "すべて表示",
+      "update_available": "更新可能"
     },
     "chat": {
       "add.assistant.title": "アシスタントを追加",
@@ -480,6 +481,11 @@
       "websearch": "ウェブ検索",
       "edit": "モデルを編集"
     },
+    "navbar": {
+      "expand": "ダイアログを展開",
+      "show_sidebar": "サイドバーを表示",
+      "hide_sidebar": "サイドバーを非表示"
+    },
     "ollama": {
       "keep_alive_time.description": "モデルがメモリに保持される時間（デフォルト：5分）",
       "keep_alive_time.placeholder": "分",
@@ -599,8 +605,9 @@
         "app_data": "アプリデータ",
         "app_logs": "アプリログ",
         "app_knowledge": "ナレッジベースファイル",
-        "app_knowledge.remove_all": "ファイルを削除",
-        "app_knowledge.remove_all_confirm": "ナレッジベースファイルを削除してもナレッジベース自体は削除されません。これにより、ストレージ容量を節約できます。続行しますか？",
+        "app_knowledge.button.delete": "ファイルを削除",
+        "app_knowledge.remove_all": "ナレッジベースファイルを削除",
+        "app_knowledge.remove_all_confirm": "ナレッジベースファイルを削除すると、ナレッジベース自体は削除されません。これにより、ストレージ容量を節約できます。続行しますか？",
         "app_knowledge.remove_all_success": "ファイル削除成功",
         "clear_cache": {
           "button": "キャッシュをクリア",
@@ -857,6 +864,34 @@
         "blacklist_tooltip": "以下の形式を使用してください(改行区切り)\nexample.com\nhttps://www.example.com\nhttps://example.com\n*://*.example.com",
         "search_max_result": "検索結果の数",
         "search_result_default": "デフォルト"
+      },
+      "mcp": {
+        "title": "MCP サーバー",
+        "config_description": "モデルコンテキストプロトコルサーバーの設定",
+        "description": "説明",
+        "addServer": "サーバーを追加",
+        "editServer": "サーバーを編集",
+        "name": "名前",
+        "type": "タイプ",
+        "url": "URL",
+        "command": "コマンド",
+        "args": "引数",
+        "argsTooltip": "1行に1つの引数を入力してください",
+        "env": "環境変数",
+        "envTooltip": "形式: KEY=value, 1行に1つ",
+        "active": "有効",
+        "actions": "操作",
+        "noServers": "サーバーが設定されていません",
+        "nameRequired": "サーバー名を入力してください",
+        "commandRequired": "コマンドを入力してください",
+        "confirmDelete": "サーバーを削除",
+        "confirmDeleteMessage": "本当にこのサーバーを削除しますか？",
+        "addSuccess": "サーバーが正常に追加されました",
+        "updateSuccess": "サーバーが正常に更新されました",
+        "deleteSuccess": "サーバーが正常に削除されました",
+        "duplicateName": "同じ名前のサーバーが既に存在します",
+        "serverSingular": "サーバー",
+        "serverPlural": "サーバー"
       }
     },
     "translate": {
