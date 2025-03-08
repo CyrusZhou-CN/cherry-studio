@@ -91,7 +91,6 @@ const Inputbar: FC<Props> = ({ assistant: _assistant, setActiveTopic, topic }) =
   const [mentionModels, setMentionModels] = useState<Model[]>([])
   const [enabledMCPs, setEnabledMCPs] = useState<MCPServer[]>([])
   const [isMentionPopupOpen, setIsMentionPopupOpen] = useState(false)
-  const [isKnowledgeBasePopupOpen, setIsKnowledgeBasePopupOpen] = useState(false)
   const [isDragging, setIsDragging] = useState(false)
   const [textareaHeight, setTextareaHeight] = useState<number>()
   const startDragY = useRef<number>(0)
@@ -227,16 +226,8 @@ const Inputbar: FC<Props> = ({ assistant: _assistant, setActiveTopic, topic }) =
     }
   }
 
-  const knowledgeState = useAppSelector((state) => state.knowledge)
-
   const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
     const isEnterPressed = event.keyCode == 13
-
-    if (event.key === '#') {
-      console.info(knowledgeState)
-      console.info(selectedKnowledgeBases)
-      setIsKnowledgeBasePopupOpen(true)
-    }
 
     if (event.key === 'Escape' && isMentionPopupOpen) {
       setIsMentionPopupOpen(false)
@@ -375,14 +366,17 @@ const Inputbar: FC<Props> = ({ assistant: _assistant, setActiveTopic, topic }) =
       // 处理@符号
       const lastAtIndex = textBeforeCursor.lastIndexOf('@')
       const lastHashIndex = textBeforeCursor.lastIndexOf('#')
-
+      // 处理@符号
       if (lastAtIndex === -1 || textBeforeCursor.slice(lastAtIndex + 1).includes(' ')) {
         setIsMentionPopupOpen(false)
       } else {
         setIsMentionPopupOpen(true)
       }
+      // 处理#符号
       if (lastHashIndex === -1 || textBeforeCursor.slice(lastHashIndex + 1).includes(' ')) {
-        setIsKnowledgeBasePopupOpen(false)
+        setIsKnowledgePopupOpen(false)
+      } else {
+        setIsKnowledgePopupOpen(true)
       }
     }
   }
@@ -703,15 +697,32 @@ const Inputbar: FC<Props> = ({ assistant: _assistant, setActiveTopic, topic }) =
           {isKnowledgePopupOpen && (
             <KnowledgePopupContainer>
               <SelectKnowledgePopup
-                selectKnowledgeBase={handleSelectKnowledgeBase}
-                selectedKnowledgeBase={selectedKnowledgeBases}
-                onClose={() => {
+                selectKnowledgeBase={(knowledgeBase) => {
+                  setSelectedKnowledgeBases((prev) => [...prev, knowledgeBase])
                   setIsKnowledgePopupOpen(false)
-                  textareaRef.current?.focus()
+
+                  // 替换文本中的#标记
+                  const textArea = textareaRef.current?.resizableTextArea?.textArea
+                  if (textArea) {
+                    const cursorPosition = textArea.selectionStart
+                    const textBeforeCursor = text.substring(0, cursorPosition)
+                    const lastHashIndex = textBeforeCursor.lastIndexOf('#')
+
+                    if (lastHashIndex !== -1) {
+                      const newText = text.substring(0, lastHashIndex) + text.substring(cursorPosition)
+                      setText(newText)
+                    }
+                  }
+
+                  // 重新聚焦输入框
+                  setTimeout(() => {
+                    textareaRef.current?.focus()
+                  }, 0)
                 }}
               />
             </KnowledgePopupContainer>
           )}
+
           <AttachmentPreview files={files} setFiles={setFiles} />
           <MentionModelsInput selectedModels={mentionModels} onRemoveModel={handleRemoveModel} />
           <SelectedKnowledgeBaseInput
@@ -961,12 +972,12 @@ const KnowledgePopupContainer = styled.div`
   position: absolute;
   bottom: 100%;
   left: 0;
-  width: auto;
+  width: 100%;
   z-index: 1000;
   background-color: var(--color-background-opacity);
   border-radius: 10px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  max-height: 320px;
+  max-height: 300px;
   overflow-y: auto;
   margin-bottom: 5px;
 `
