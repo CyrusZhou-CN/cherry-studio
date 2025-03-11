@@ -14,6 +14,7 @@ import TranslateButton from '@renderer/components/TranslateButton'
 import { isVisionModel, isWebSearchModel } from '@renderer/config/models'
 import db from '@renderer/databases'
 import { useAssistant } from '@renderer/hooks/useAssistant'
+import { useMessageOperations } from '@renderer/hooks/useMessageOperations'
 import { modelGenerating, useRuntime } from '@renderer/hooks/useRuntime'
 import { useMessageStyle, useSettings } from '@renderer/hooks/useSettings'
 import { useShortcut, useShortcutDisplay } from '@renderer/hooks/useShortcuts'
@@ -24,7 +25,7 @@ import FileManager from '@renderer/services/FileManager'
 import { estimateTextTokens as estimateTxtTokens } from '@renderer/services/TokenService'
 import { translateText } from '@renderer/services/TranslateService'
 import WebSearchService from '@renderer/services/WebSearchService'
-import store, { useAppDispatch, useAppSelector } from '@renderer/store'
+import store, { useAppDispatch } from '@renderer/store'
 import { sendMessage as _sendMessage } from '@renderer/store/messages'
 import { setGenerating, setSearching } from '@renderer/store/runtime'
 import { Assistant, FileType, KnowledgeBase, MCPServer, Message, Model, Topic } from '@renderer/types'
@@ -61,7 +62,7 @@ interface Props {
 let _text = ''
 let _files: FileType[] = []
 
-const Inputbar: FC<Props> = ({ assistant: _assistant, setActiveTopic }) => {
+const Inputbar: FC<Props> = ({ assistant: _assistant, setActiveTopic, topic }) => {
   const [text, setText] = useState(_text)
   const [inputFocus, setInputFocus] = useState(false)
   const { assistant, addTopic, model, setModel, updateAssistant } = useAssistant(_assistant.id)
@@ -78,13 +79,14 @@ const Inputbar: FC<Props> = ({ assistant: _assistant, setActiveTopic }) => {
   const [expended, setExpend] = useState(false)
   const [estimateTokenCount, setEstimateTokenCount] = useState(0)
   const [contextCount, setContextCount] = useState({ current: 0, max: 0 })
-  const generating = useAppSelector((state) => state.runtime.generating)
+  // const generating = useAppSelector((state) => state.runtime.generating)
   const textareaRef = useRef<TextAreaRef>(null)
   const [files, setFiles] = useState<FileType[]>(_files)
   const { t } = useTranslation()
   const containerRef = useRef(null)
   const { searching } = useRuntime()
   const { isBubbleStyle } = useMessageStyle()
+  const { loading } = useMessageOperations(topic)
   const dispatch = useAppDispatch()
   const [spaceClickCount, setSpaceClickCount] = useState(0)
   const spaceClickTimer = useRef<NodeJS.Timeout>()
@@ -134,9 +136,7 @@ const Inputbar: FC<Props> = ({ assistant: _assistant, setActiveTopic }) => {
   _files = files
 
   const sendMessage = useCallback(async () => {
-    await modelGenerating()
-
-    if (inputEmpty) {
+    if (inputEmpty || loading) {
       return
     }
 
@@ -144,7 +144,7 @@ const Inputbar: FC<Props> = ({ assistant: _assistant, setActiveTopic }) => {
       // Dispatch the sendMessage action with all options
       const uploadedFiles = await FileManager.uploadFiles(files)
       dispatch(
-        _sendMessage(text, assistant, assistant.topics[0], {
+        _sendMessage(text, assistant, topic, {
           files: uploadedFiles,
           knowledgeBaseIds: selectedKnowledgeBases?.map((base) => base.id),
           mentionModels,
@@ -273,7 +273,7 @@ const Inputbar: FC<Props> = ({ assistant: _assistant, setActiveTopic }) => {
   }, [addTopic, assistant, clickAssistantToShowTopic, setActiveTopic, setModel])
 
   const clearTopic = async () => {
-    if (generating) {
+    if (loading) {
       onPause()
       await delay(1)
     }
@@ -289,7 +289,7 @@ const Inputbar: FC<Props> = ({ assistant: _assistant, setActiveTopic }) => {
   }
 
   const onNewContext = () => {
-    if (generating) return onPause()
+    if (loading) return onPause()
     EventEmitter.emit(EVENT_NAMES.NEW_CONTEXT)
   }
 
@@ -477,7 +477,7 @@ const Inputbar: FC<Props> = ({ assistant: _assistant, setActiveTopic }) => {
   }, [isDragging, handleDrag, handleDragEnd])
 
   useShortcut('new_topic', () => {
-    if (!generating) {
+    if (!loading) {
       addNewTopic()
       EventEmitter.emit(EVENT_NAMES.SHOW_TOPIC_SIDEBAR)
       textareaRef.current?.focus()
@@ -782,14 +782,14 @@ const Inputbar: FC<Props> = ({ assistant: _assistant, setActiveTopic }) => {
             </ToolbarMenu>
             <ToolbarMenu>
               <TranslateButton text={text} onTranslated={onTranslated} isLoading={isTranslating} />
-              {generating && (
+              {loading && (
                 <Tooltip placement="top" title={t('chat.input.pause')} arrow>
                   <ToolbarButton type="text" onClick={onPause} style={{ marginRight: -2, marginTop: 1 }}>
                     <PauseCircleOutlined style={{ color: 'var(--color-error)', fontSize: 20 }} />
                   </ToolbarButton>
                 </Tooltip>
               )}
-              {!generating && <SendMessageButton sendMessage={sendMessage} disabled={generating || inputEmpty} />}
+              {!loading && <SendMessageButton sendMessage={sendMessage} disabled={loading || inputEmpty} />}
             </ToolbarMenu>
           </Toolbar>
         </InputBarContainer>
