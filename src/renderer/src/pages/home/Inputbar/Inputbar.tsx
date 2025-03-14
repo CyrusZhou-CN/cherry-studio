@@ -49,8 +49,6 @@ import MCPToolsButton from './MCPToolsButton'
 import MentionModelsButton from './MentionModelsButton'
 import MentionModelsInput from './MentionModelsInput'
 import NewContextButton from './NewContextButton'
-import SelectedKnowledgeBaseInput from './SelectedKnowledgeBaseInput'
-import SelectKnowledgePopup from './SelectKnowledgePopup'
 import SendMessageButton from './SendMessageButton'
 import TokenCount from './TokenCount'
 interface Props {
@@ -791,6 +789,7 @@ const Inputbar: FC<Props> = ({ assistant: _assistant, setActiveTopic, topic }) =
                   ToolbarButton={ToolbarButton}
                 />
               )}
+              <AttachmentButton model={model} files={files} setFiles={setFiles} ToolbarButton={ToolbarButton} />
               <Tooltip placement="top" title={t('chat.input.clear', { Command: cleanTopicShortcut })} arrow>
                 <Popconfirm
                   title={t('chat.input.clear.content')}
