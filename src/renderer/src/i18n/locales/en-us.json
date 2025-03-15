@@ -436,6 +436,8 @@
       "message.style": "Message style",
       "message.style.bubble": "Bubble",
       "message.style.plain": "Plain",
+      "loading.notion.preparing": "Preparing to export to Notion...",
+      "loading.notion.exporting_progress": "Exporting to Notion ({{current}}/{{total}})...",
       "regenerate.confirm": "Regenerating will replace current message",
       "reset.confirm.content": "Are you sure you want to clear all data?",
       "reset.double.confirm.content": "All data will be lost, do you want to continue?",
@@ -561,6 +563,12 @@
       },
       "title": "PlantUML Diagram"
     },
+    "gpustack": {
+      "keep_alive_time.description": "The time in minutes to keep the connection alive, default is 5 minutes.",
+      "keep_alive_time.placeholder": "Minutes",
+      "keep_alive_time.title": "Keep Alive Time",
+      "title": "GPUStack"
+    },
     "prompts": {
       "explanation": "Explain this concept to me",
       "summarize": "Summarize this text",
@@ -608,7 +616,8 @@
       "xirang": "State Cloud Xirang",
       "yi": "Yi",
       "zhinao": "360AI",
-      "zhipu": "ZHIPU AI"
+      "zhipu": "ZHIPU AI",
+      "gpustack": "GPUStack"
     },
     "restore": {
       "confirm": "Are you sure you want to restore data?",
@@ -960,6 +969,7 @@
         "blacklist_description": "Results from the following websites will not appear in search results",
         "blacklist_tooltip": "Please use the following format (separated by line breaks)\nexample.com\nhttps://www.example.com\nhttps://example.com\n*://*.example.com",
         "check": "Check",
+        "check_success": "Verification successful",
         "check_failed": "Verification failed",
         "get_api_key": "Get API Key",
         "no_provider_selected": "Please select a search service provider before checking.",
