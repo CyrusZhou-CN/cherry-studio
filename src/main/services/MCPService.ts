@@ -1,4 +1,5 @@
 import { isLinux, isMac, isWin } from '@main/constant'
+import { runInstallScript } from '@main/utils/process'
 import type { Client } from '@modelcontextprotocol/sdk/client/index.js'
 import type { SSEClientTransport } from '@modelcontextprotocol/sdk/client/sse.js'
 import type { StdioClientTransport } from '@modelcontextprotocol/sdk/client/stdio.js'
@@ -337,13 +338,16 @@ export default class MCPService extends EventEmitter {
           // check if cmd exists, if not exist, install it using `node scripts/install-bun.js`
           if (!fs.existsSync(cmd)) {
             log.info(`[MCP] Installing ${command}...`)
+            await runInstallScript('install-bun.js')
           }
           // add -x to args if args exist
           if (args && args.length > 0) {
             if (!args.includes('-y')) {
               args.unshift('-y')
             }
-            args.unshift('x')
+            if (!args.includes('x')) {
+              args.unshift('x')
+            }
           }
         } else if (command === 'uvx') {
           cmd = path.join(binariesDir, 'uvx')
@@ -352,6 +356,7 @@ export default class MCPService extends EventEmitter {
           // check if cmd exists, if not exist, install it using ``
           if (!fs.existsSync(cmd)) {
             log.info(`[MCP] Installing ${command}...`)
+            await runInstallScript('install-uv.js')
           }
         }
 
