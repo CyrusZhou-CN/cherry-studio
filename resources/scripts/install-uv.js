@@ -1,7 +1,7 @@
 const fs = require('fs')
 const path = require('path')
 const os = require('os')
-const { execSync, exec } = require('child_process')
+const { execSync } = require('child_process')
 const https = require('https')
 
 // Base URL for downloading uv binaries
@@ -178,7 +178,7 @@ async function installUv() {
       const [platformArch, musl] = platformKey.split('-musl-')
       if (musl) {
         const [platform, arch] = platformArch.split('-')
-        await downloadUvBinary(platform, musl, version, true)
+        await downloadUvBinary(platform, arch, version, true)
       } else {
         const [platform, arch] = platformKey.split('-')
         await downloadUvBinary(platform, arch, version, false)
