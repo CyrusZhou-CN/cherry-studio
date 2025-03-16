@@ -36,7 +36,7 @@ export default class MCPService extends EventEmitter {
   constructor() {
     super()
     this.createServerLoadingPromise()
-    this.init().catch(this.logError('Failed to initialize MCP service'))
+    this.init().catch((err) => this.logError('Failed to initialize MCP service', err))
   }
 
   /**
@@ -64,7 +64,7 @@ export default class MCPService extends EventEmitter {
 
     // Initialize if not already initialized
     if (!this.initialized) {
-      this.init().catch(this.logError('Failed to initialize MCP service'))
+      this.init().catch((err) => this.logError('Failed to initialize MCP service', err))
     }
   }
 
@@ -130,8 +130,8 @@ export default class MCPService extends EventEmitter {
   /**
    * Helper to create consistent error logging functions
    */
-  private logError(message: string) {
-    return (err: Error) => log.error(`[MCP] ${message}:`, err)
+  private logError(message: string, err?: any): void {
+    log.error(`[MCP] ${message}`, err)
   }
 
   /**
@@ -142,7 +142,7 @@ export default class MCPService extends EventEmitter {
       const { Client } = await import('@modelcontextprotocol/sdk/client/index.js')
       return Client
     } catch (err) {
-      log.error('[MCP] Failed to import Client:', err)
+      this.logError('Failed to import Client:', err)
       throw err
     }
   }
@@ -420,6 +420,7 @@ export default class MCPService extends EventEmitter {
    */
   public async listTools(serverName?: string): Promise<MCPTool[]> {
     await this.ensureInitialized()
+    log.info(`[MCP] Listing tools from ${serverName || 'all active servers'}`)
 
     try {
       // If server name provided, list tools for that server only
@@ -431,18 +432,19 @@ export default class MCPService extends EventEmitter {
       let allTools: MCPTool[] = []
 
       for (const clientName in this.clients) {
+        log.info(`[MCP] Listing tools from ${clientName}`)
         try {
           const tools = await this.listToolsFromServer(clientName)
           allTools = allTools.concat(tools)
         } catch (error) {
-          this.logError(`[MCP] Error listing tools for ${clientName}`)
+          this.logError(`Error listing tools for ${clientName}`, error)
         }
       }
 
       log.info(`[MCP] Total tools listed: ${allTools.length}`)
       return allTools
     } catch (error) {
-      this.logError('Error listing tools:')
+      this.logError('Error listing tools:', error)
       return []
     }
   }
@@ -451,11 +453,13 @@ export default class MCPService extends EventEmitter {
    * Helper method to list tools from a specific server
    */
   private async listToolsFromServer(serverName: string): Promise<MCPTool[]> {
+    log.info(`[MCP] start list tools from ${serverName}:`)
     if (!this.clients[serverName]) {
       throw new Error(`MCP Client ${serverName} not found`)
     }
-
     const { tools } = await this.clients[serverName].listTools()
+
+    log.info(`[MCP] Tools from ${serverName}:`, tools)
     return tools.map((tool: any) => ({
       ...tool,
       serverName,
@@ -534,7 +538,7 @@ export default class MCPService extends EventEmitter {
         try {
           await this.activate(server)
         } catch (error) {
-          this.logError(`Failed to activate server ${server.name}`)
+          this.logError(`Failed to activate server ${server.name}`, error)
           this.emit('server-error', { name: server.name, error })
         }
       })
