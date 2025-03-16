@@ -1,5 +1,7 @@
 import { spawn } from 'child_process'
 import log from 'electron-log'
+import fs from 'fs'
+import os from 'os'
 import path from 'path'
 
 import { getResourcePath } from '.'
@@ -30,5 +32,19 @@ export function runInstallScript(scriptPath: string): Promise<void> {
         reject(new Error(`Process exited with code ${code}`))
       }
     })
+  })
+}
+
+export function getBinaryPath(name: string): string {
+  const binariesDir = path.join(os.homedir(), '.cherrystudio', 'bin')
+  let cmd = path.join(binariesDir, name)
+  cmd = process.platform === 'win32' ? `${cmd}.exe` : cmd
+  return cmd
+}
+
+export function isBinaryExists(name: string): Promise<boolean> {
+  return new Promise((resolve) => {
+    const cmd = getBinaryPath(name)
+    resolve(fs.existsSync(cmd))
   })
 }

@@ -1,12 +1,11 @@
 import { isLinux, isMac, isWin } from '@main/constant'
-import { runInstallScript } from '@main/utils/process'
+import { getBinaryPath, isBinaryExists, runInstallScript } from '@main/utils/process'
 import type { Client } from '@modelcontextprotocol/sdk/client/index.js'
 import type { SSEClientTransport } from '@modelcontextprotocol/sdk/client/sse.js'
 import type { StdioClientTransport } from '@modelcontextprotocol/sdk/client/stdio.js'
 import { MCPServer, MCPTool } from '@types'
 import log from 'electron-log'
 import { EventEmitter } from 'events'
-import fs from 'fs'
 import os from 'os'
 import path from 'path'
 import { v4 as uuidv4 } from 'uuid'
@@ -331,15 +330,15 @@ export default class MCPService extends EventEmitter {
         const binariesDir = path.join(os.homedir(), '.cherrystudio', 'bin')
         log.info(`[MCP] Using binaries directory: ${binariesDir}`)
         if (command === 'npx') {
-          cmd = path.join(binariesDir, 'bun')
-          cmd = process.platform === 'win32' ? `${cmd}.exe` : cmd
-          log.info(`[MCP] Using command: ${cmd}`)
-
           // check if cmd exists, if not exist, install it using `node scripts/install-bun.js`
-          if (!fs.existsSync(cmd)) {
-            log.info(`[MCP] Installing ${command}...`)
+          const isBunExist = await isBinaryExists('bun')
+          if (!isBunExist) {
+            log.info(`[MCP] Installing bun...`)
             await runInstallScript('install-bun.js')
           }
+          cmd = getBinaryPath('bun')
+          log.info(`[MCP] Using command: ${cmd}`)
+
           // add -x to args if args exist
           if (args && args.length > 0) {
             if (!args.includes('-y')) {
@@ -350,14 +349,13 @@ export default class MCPService extends EventEmitter {
             }
           }
         } else if (command === 'uvx') {
-          cmd = path.join(binariesDir, 'uvx')
-          cmd = process.platform === 'win32' ? `${cmd}.exe` : cmd
-          log.info(`[MCP] Using command: ${cmd}`)
-          // check if cmd exists, if not exist, install it using ``
-          if (!fs.existsSync(cmd)) {
-            log.info(`[MCP] Installing ${command}...`)
+          // check if cmd exists, if not exist, install it using `node scripts/install-uv.js`
+          const isUvxExist = await isBinaryExists('uvx')
+          if (!isUvxExist) {
+            log.info(`[MCP] Installing uvx...`)
             await runInstallScript('install-uv.js')
           }
+          cmd = getBinaryPath('uvx')
         }
 
         log.info(`[MCP] Starting server with command: ${cmd} ${args ? args.join(' ') : ''}`)
