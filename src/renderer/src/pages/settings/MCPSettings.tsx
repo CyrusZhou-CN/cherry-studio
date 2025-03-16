@@ -146,9 +146,21 @@ const MCPSettings: FC = () => {
     }
   }
 
-  const showAddModal = () => {
+  const showAddModal = (server?: MCPServer) => {
+    setEditingServer(null)
     form.resetFields()
     form.setFieldsValue({ serverType: 'stdio', isActive: true })
+
+    if (server) {
+      form.setFieldsValue({
+        name: server.name,
+        description: server.description,
+        baseUrl: server.baseUrl || '',
+        command: server.command || '',
+        args: server.args ? server.args.join('\n') : ''
+      })
+    }
+
     setServerType('stdio')
     setIsModalVisible(true)
   }
@@ -408,7 +420,7 @@ const MCPSettings: FC = () => {
             </Paragraph>
 
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 }}>
-              <Button type="primary" icon={<PlusOutlined />} onClick={showAddModal}>
+              <Button type="primary" icon={<PlusOutlined />} onClick={() => showAddModal()}>
                 {t('settings.mcp.addServer')}
               </Button>
               <Text type="secondary">
@@ -435,75 +447,6 @@ const MCPSettings: FC = () => {
             </Card>
           </>
         )}
-
-        <Modal
-          title={editingServer ? t('settings.mcp.editServer') : t('settings.mcp.addServer')}
-          open={isModalVisible}
-          onCancel={handleCancel}
-          onOk={handleSubmit}
-          confirmLoading={loading}
-          maskClosable={false}
-          width={600}>
-          <Form form={form} layout="vertical">
-            <Form.Item
-              name="name"
-              label={t('settings.mcp.name')}
-              rules={[{ required: true, message: t('settings.mcp.nameRequired') }]}>
-              <Input disabled={!!editingServer} placeholder={t('common.name')} />
-            </Form.Item>
-
-            <Form.Item name="description" label={t('settings.mcp.description')}>
-              <TextArea rows={2} placeholder={t('common.description')} />
-            </Form.Item>
-
-            <Form.Item
-              name="serverType"
-              label={t('settings.mcp.type')}
-              rules={[{ required: true }]}
-              initialValue="stdio">
-              <Radio.Group
-                onChange={(e) => setServerType(e.target.value)}
-                options={[
-                  { label: 'SSE (Server-Sent Events)', value: 'sse' },
-                  { label: 'STDIO (Standard Input/Output)', value: 'stdio' }
-                ]}
-              />
-            </Form.Item>
-
-            {serverType === 'sse' && (
-              <Form.Item
-                name="baseUrl"
-                label={t('settings.mcp.url')}
-                rules={[{ required: serverType === 'sse', message: t('settings.mcp.baseUrlRequired') }]}
-                tooltip={t('settings.mcp.baseUrlTooltip')}>
-                <Input placeholder="http://localhost:3000/sse" />
-              </Form.Item>
-            )}
-
-            {serverType === 'stdio' && (
-              <>
-                <Form.Item
-                  name="command"
-                  label={t('settings.mcp.command')}
-                  rules={[{ required: serverType === 'stdio', message: t('settings.mcp.commandRequired') }]}>
-                  <Input placeholder="uvx or npx" />
-                </Form.Item>
-
-                <Form.Item name="args" label={t('settings.mcp.args')} tooltip={t('settings.mcp.argsTooltip')}>
-                  <TextArea rows={3} placeholder={`arg1\narg2`} style={{ fontFamily: 'monospace' }} />
-                </Form.Item>
-
-                <Form.Item name="env" label={t('settings.mcp.env')} tooltip={t('settings.mcp.envTooltip')}>
-                  <TextArea rows={3} placeholder={`KEY1=value1\nKEY2=value2`} style={{ fontFamily: 'monospace' }} />
-                </Form.Item>
-              </>
-            )}
-
-            <Form.Item name="isActive" label={t('settings.mcp.active')} valuePropName="checked" initialValue={true}>
-              <Switch />
-            </Form.Item>
-          </Form>
-        </Modal>
       </SettingGroup>
 
       <SettingGroup theme={theme}>
@@ -579,8 +522,8 @@ const MCPSettings: FC = () => {
                           isActive: true
                         }
 
-                        // 使用 showEditModal 函数设置表单值并显示弹窗
-                        showEditModal(tempServer)
+                        // 使用 showAddModal 函数设置表单值并显示弹窗
+                        showAddModal(tempServer)
                       }}>
                       {t('settings.mcp.addServer')}
                     </Button>
