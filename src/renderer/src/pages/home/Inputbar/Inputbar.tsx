@@ -965,7 +965,7 @@ const KnowledgePopupContainer = styled.div`
   position: absolute;
   bottom: 100%;
   left: 0;
-  width: 20%;
+  width: auto;
   z-index: 1000;
   background-color: var(--color-background-opacity);
   border-radius: 10px;
