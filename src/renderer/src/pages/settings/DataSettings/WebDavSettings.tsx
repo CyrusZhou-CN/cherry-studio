@@ -12,12 +12,13 @@ import {
   setWebdavSyncInterval as _setWebdavSyncInterval,
   setWebdavUser as _setWebdavUser
 } from '@renderer/store/settings'
-import { Button, Input, Modal, Select, Spin } from 'antd'
+import { Button, Input, Modal, Select, Spin, Tooltip } from 'antd'
 import dayjs from 'dayjs'
 import { FC, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { SettingDivider, SettingGroup, SettingRow, SettingRowTitle, SettingTitle } from '..'
+import { formatFileSize } from '@renderer/utils'
 
 interface BackupFile {
   fileName: string
@@ -170,7 +171,7 @@ const WebDavSettings: FC = () => {
 
   const formatFileOption = (file: BackupFile) => {
     const date = dayjs(file.modifiedTime).format('YYYY-MM-DD HH:mm:ss')
-    const size = `${(file.size / 1024).toFixed(2)} KB`
+    const size = formatFileSize(file.size)
     return {
       label: `${file.fileName} (${date}, ${size})`,
       value: file.fileName
