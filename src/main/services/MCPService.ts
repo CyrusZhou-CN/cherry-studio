@@ -28,6 +28,8 @@ class McpService {
     this.callTool = this.callTool.bind(this)
     this.closeClient = this.closeClient.bind(this)
     this.removeServer = this.removeServer.bind(this)
+    this.restartServer = this.restartServer.bind(this)
+    this.stopServer = this.stopServer.bind(this)
   }
 
   async initClient(server: MCPServer): Promise<Client> {
@@ -36,7 +38,16 @@ class McpService {
     // Check if we already have a client for this server configuration
     const existingClient = this.clients.get(serverKey)
     if (existingClient) {
-      return existingClient
+      // Check if the existing client is still connected
+      const pingResult = await existingClient.ping()
+      Logger.info(`[MCP] Ping result for ${server.name}:`, pingResult)
+      // If the ping fails, remove the client from the cache
+      // and create a new one
+      if (!pingResult) {
+        this.clients.delete(serverKey)
+      } else {
+        return existingClient
+      }
     }
 
     // Create new client instance for each connection
@@ -101,26 +112,41 @@ class McpService {
     }
   }
 
-  async closeClient(client: Client) {
+  async closeClient(serverKey: string) {
+    const client = this.clients.get(serverKey)
     if (client) {
       // Remove the client from the cache
-      for (const [key, cachedClient] of this.clients.entries()) {
-        if (cachedClient === client) {
-          this.clients.delete(key)
-          break
-        }
-      }
-
       await client.close()
+      Logger.info(`[MCP] Closed server: ${serverKey}`)
+      this.clients.delete(serverKey)
+    } else {
+      Logger.warn(`[MCP] No client found for server: ${serverKey}`)
     }
   }
 
+  async stopServer(_: Electron.IpcMainInvokeEvent, server: MCPServer) {
+    const serverKey = this.getServerKey(server)
+    Logger.info(`[MCP] Stopping server: ${server.name}`)
+    await this.closeClient(serverKey)
+  }
+
   async removeServer(_: Electron.IpcMainInvokeEvent, server: MCPServer) {
-    const client = await this.initClient(server)
-    await this.closeClient(client)
+    const serverKey = this.getServerKey(server)
+    const existingClient = this.clients.get(serverKey)
+    if (existingClient) {
+      await this.closeClient(serverKey)
+    }
+  }
+
+  async restartServer(_: Electron.IpcMainInvokeEvent, server: MCPServer) {
+    Logger.info(`[MCP] Restarting server: ${server.name}`)
+    const serverKey = this.getServerKey(server)
+    await this.closeClient(serverKey)
+    await this.initClient(server)
   }
 
   async listTools(_: Electron.IpcMainInvokeEvent, server: MCPServer) {
+    Logger.info(`[MCP] Listing tools for server: ${server.name}`)
     const client = await this.initClient(server)
     const { tools } = await client.listTools()
     return tools.map((tool) => ({

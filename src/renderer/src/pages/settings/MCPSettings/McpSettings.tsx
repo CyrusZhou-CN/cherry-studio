@@ -2,7 +2,7 @@ import { useMCPServers } from '@renderer/hooks/useMCPServers'
 import { MCPServer, MCPTool } from '@renderer/types'
 import { Button, Flex, Form, Input, Radio, Switch } from 'antd'
 import TextArea from 'antd/es/input/TextArea'
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
 
@@ -26,6 +26,7 @@ interface MCPFormValues {
 
 const McpSettings: React.FC<Props> = ({ server }) => {
   const { t } = useTranslation()
+  const { deleteMCPServer } = useMCPServers()
   const [serverType, setServerType] = useState<'sse' | 'stdio'>('stdio')
   const [form] = Form.useForm<MCPFormValues>()
   const [loading, setLoading] = useState(false)
@@ -100,7 +101,7 @@ const McpSettings: React.FC<Props> = ({ server }) => {
 
     fetchTools()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [server.id, server.isActive])
+  }, [])
   // Save the form data
   const onSave = async () => {
     setLoading(true)
@@ -136,7 +137,7 @@ const McpSettings: React.FC<Props> = ({ server }) => {
       }
 
       try {
-        await window.api.mcp.listTools(mcpServer)
+        await window.api.mcp.restartServer(mcpServer)
         updateMCPServer({ ...mcpServer, isActive: true })
         window.message.success({ content: t('settings.mcp.updateSuccess'), key: 'mcp-update-success' })
         setLoading(false)
@@ -155,6 +156,23 @@ const McpSettings: React.FC<Props> = ({ server }) => {
     }
   }
 
+  const onDeleteMcpServer = useCallback(
+    async (server: MCPServer) => {
+      try {
+        await window.api.mcp.removeServer(server)
+        deleteMCPServer(server.id)
+        window.message.success({ content: t('settings.mcp.deleteSuccess'), key: 'mcp-list' })
+      } catch (error: any) {
+        window.message.error({
+          content: `${t('settings.mcp.deleteError')}: ${error.message}`,
+          key: 'mcp-list'
+        })
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [server, t]
+  )
+
   const onFormValuesChange = () => {
     setIsFormChanged(true)
   }
@@ -170,13 +188,14 @@ const McpSettings: React.FC<Props> = ({ server }) => {
   const onToggleActive = async (active: boolean) => {
     await form.validateFields()
     setLoadingServer(server.id)
+    const oldActiveState = server.isActive
 
     try {
       if (active) {
         const localTools = await window.api.mcp.listTools(server)
         setTools(localTools)
       } else {
-        setTools([])
+        await window.api.mcp.stopServer(server)
       }
       updateMCPServer({ ...server, isActive: active })
     } catch (error: any) {
@@ -185,7 +204,7 @@ const McpSettings: React.FC<Props> = ({ server }) => {
         content: formatError(error),
         centered: true
       })
-      console.error('[MCP] Error toggling server active', error)
+      updateMCPServer({ ...server, isActive: oldActiveState })
     } finally {
       setLoadingServer(null)
     }
@@ -205,6 +224,9 @@ const McpSettings: React.FC<Props> = ({ server }) => {
             />
             <Button type="primary" size="small" onClick={onSave} loading={loading} disabled={!isFormChanged}>
               {t('common.save')}
+            </Button>
+            <Button danger type="primary" size="small" onClick={() => onDeleteMcpServer(server)} loading={loading}>
+              {t('common.delete')}
             </Button>
           </Flex>
         </SettingTitle>
@@ -276,10 +298,6 @@ const McpSettings: React.FC<Props> = ({ server }) => {
 const ServerName = styled.span`
   font-size: 14px;
   font-weight: 500;
-`
-
-const SelectableContent = styled.div`
-  user-select: text;
 `
 
 export default McpSettings
