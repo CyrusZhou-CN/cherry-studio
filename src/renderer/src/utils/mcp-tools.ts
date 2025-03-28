@@ -79,9 +79,10 @@ export function openAIToolsToMcpTool(
     return undefined
   }
 
-  const tool = mcpTools.find((mcptool) => mcptool.serverId === llmTool.function.name)
+  const tool = mcpTools.find((mcptool) => mcptool.id === llmTool.function.name)
 
   if (!tool) {
+    console.warn('No MCP Tool found for tool call:', llmTool)
     return undefined
   }
 
