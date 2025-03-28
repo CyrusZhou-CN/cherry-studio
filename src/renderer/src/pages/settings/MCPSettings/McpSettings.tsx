@@ -1,5 +1,5 @@
 import { useMCPServers } from '@renderer/hooks/useMCPServers'
-import { MCPServer } from '@renderer/types'
+import { MCPServer, MCPTool } from '@renderer/types'
 import { Button, Flex, Form, Input, Radio, Switch } from 'antd'
 import TextArea from 'antd/es/input/TextArea'
 import React, { useEffect, useState } from 'react'
@@ -7,6 +7,7 @@ import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
 
 import { SettingContainer, SettingDivider, SettingGroup, SettingTitle } from '..'
+import MCPToolsSection from './McpTool'
 
 interface Props {
   server: MCPServer
@@ -31,6 +32,7 @@ const McpSettings: React.FC<Props> = ({ server }) => {
   const [isFormChanged, setIsFormChanged] = useState(false)
   const [loadingServer, setLoadingServer] = useState<string | null>(null)
   const { updateMCPServer } = useMCPServers()
+  const [tools, setTools] = useState<MCPTool[]>([])
 
   useEffect(() => {
     if (server) {
@@ -76,6 +78,30 @@ const McpSettings: React.FC<Props> = ({ server }) => {
     type && setServerType(type)
   }, [form])
 
+  // Load tools on initial mount if server is active
+  useEffect(() => {
+    const fetchTools = async () => {
+      if (server.isActive) {
+        try {
+          setLoadingServer(server.id)
+          const localTools = await window.api.mcp.listTools(server)
+          setTools(localTools)
+          // window.message.success(t('settings.mcp.toolsLoaded'))
+        } catch (error) {
+          window.message.error({
+            content: t('settings.mcp.toolsLoadError') + formatError(error),
+            key: 'mcp-tools-error'
+          })
+        } finally {
+          setLoadingServer(null)
+        }
+      }
+    }
+
+    fetchTools()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [server.id, server.isActive])
+  // Save the form data
   const onSave = async () => {
     setLoading(true)
     try {
@@ -147,7 +173,10 @@ const McpSettings: React.FC<Props> = ({ server }) => {
 
     try {
       if (active) {
-        await window.api.mcp.listTools(server)
+        const localTools = await window.api.mcp.listTools(server)
+        setTools(localTools)
+      } else {
+        setTools([])
       }
       updateMCPServer({ ...server, isActive: active })
     } catch (error: any) {
@@ -185,7 +214,7 @@ const McpSettings: React.FC<Props> = ({ server }) => {
           layout="vertical"
           onValuesChange={onFormValuesChange}
           style={{
-            height: 'calc(100vh - var(--navbar-height) - 115px)',
+            // height: 'calc(100vh - var(--navbar-height) - 315px)',
             overflowY: 'auto',
             width: 'calc(100% + 10px)',
             paddingRight: '10px'
@@ -237,6 +266,8 @@ const McpSettings: React.FC<Props> = ({ server }) => {
             </>
           )}
         </Form>
+
+        {server.isActive && <MCPToolsSection tools={tools} />}
       </SettingGroup>
     </SettingContainer>
   )
@@ -245,6 +276,10 @@ const McpSettings: React.FC<Props> = ({ server }) => {
 const ServerName = styled.span`
   font-size: 14px;
   font-weight: 500;
+`
+
+const SelectableContent = styled.div`
+  user-select: text;
 `
 
 export default McpSettings
