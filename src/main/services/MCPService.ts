@@ -10,7 +10,6 @@ import { app } from 'electron'
 import Logger from 'electron-log'
 
 class McpService {
-  private client: Client | null = null
   private clients: Map<string, Client> = new Map()
 
   private getServerKey(server: MCPServer): string {
@@ -31,23 +30,17 @@ class McpService {
     this.removeServer = this.removeServer.bind(this)
   }
 
-  async initClient(server: MCPServer) {
+  async initClient(server: MCPServer): Promise<Client> {
     const serverKey = this.getServerKey(server)
 
     // Check if we already have a client for this server configuration
     const existingClient = this.clients.get(serverKey)
     if (existingClient) {
-      this.client = existingClient
-      return
-    }
-
-    // If there's an existing client for a different server, close it
-    if (this.client) {
-      await this.closeClient()
+      return existingClient
     }
 
     // Create new client instance for each connection
-    this.client = new Client({ name: 'Cherry Studio', version: app.getVersion() }, { capabilities: {} })
+    const client = new Client({ name: 'Cherry Studio', version: app.getVersion() }, { capabilities: {} })
 
     const args = [...(server.args || [])]
 
@@ -95,41 +88,41 @@ class McpService {
         throw new Error('Either baseUrl or command must be provided')
       }
 
-      await this.client.connect(transport)
+      await client.connect(transport)
 
       // Store the new client in the cache
-      this.clients.set(serverKey, this.client)
+      this.clients.set(serverKey, client)
 
       Logger.info(`[MCP] Activated server: ${server.name}`)
+      return client
     } catch (error: any) {
       Logger.error(`[MCP] Error activating server ${server.name}:`, error)
       throw error
     }
   }
 
-  async closeClient() {
-    if (this.client) {
+  async closeClient(client: Client) {
+    if (client) {
       // Remove the client from the cache
-      for (const [key, client] of this.clients.entries()) {
-        if (client === this.client) {
+      for (const [key, cachedClient] of this.clients.entries()) {
+        if (cachedClient === client) {
           this.clients.delete(key)
           break
         }
       }
 
-      await this.client.close()
-      this.client = null
+      await client.close()
     }
   }
 
   async removeServer(_: Electron.IpcMainInvokeEvent, server: MCPServer) {
-    await this.closeClient()
-    this.clients.delete(this.getServerKey(server))
+    const client = await this.initClient(server)
+    await this.closeClient(client)
   }
 
   async listTools(_: Electron.IpcMainInvokeEvent, server: MCPServer) {
-    await this.initClient(server)
-    const { tools } = await this.client!.listTools()
+    const client = await this.initClient(server)
+    const { tools } = await client.listTools()
     return tools.map((tool) => ({
       ...tool,
       serverId: server.id,
@@ -144,11 +137,10 @@ class McpService {
     _: Electron.IpcMainInvokeEvent,
     { server, name, args }: { server: MCPServer; name: string; args: any }
   ): Promise<any> {
-    await this.initClient(server)
-
     try {
       Logger.info('[MCP] Calling:', server.name, name, args)
-      const result = await this.client!.callTool({ name, arguments: args })
+      const client = await this.initClient(server)
+      const result = await client.callTool({ name, arguments: args })
       return result
     } catch (error) {
       Logger.error(`[MCP] Error calling tool ${name} on ${server.name}:`, error)
