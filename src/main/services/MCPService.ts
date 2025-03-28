@@ -6,9 +6,11 @@ import { Client } from '@modelcontextprotocol/sdk/client/index.js'
 import { SSEClientTransport } from '@modelcontextprotocol/sdk/client/sse.js'
 import { StdioClientTransport } from '@modelcontextprotocol/sdk/client/stdio.js'
 import { nanoid } from '@reduxjs/toolkit'
-import { MCPServer } from '@types'
+import { MCPServer, MCPTool } from '@types'
 import { app } from 'electron'
 import Logger from 'electron-log'
+
+import { CacheService } from './CacheService'
 
 class McpService {
   private clients: Map<string, Client> = new Map()
@@ -147,15 +149,29 @@ class McpService {
   }
 
   async listTools(_: Electron.IpcMainInvokeEvent, server: MCPServer) {
-    Logger.info(`[MCP] Listing tools for server: ${server.name}`)
     const client = await this.initClient(server)
+    const cacheKey = `mcp:list_tool:${server.id}`
+    if (CacheService.has(cacheKey)) {
+      Logger.info(`[MCP] Tools from ${server.name} loaded from cache`)
+      const cachedTools = CacheService.get<MCPTool[]>(cacheKey)
+      if (cachedTools && cachedTools.length > 0) {
+        return cachedTools
+      }
+    }
+    Logger.info(`[MCP] Listing tools for server: ${server.name}`)
     const { tools } = await client.listTools()
-    return tools.map((tool) => ({
-      ...tool,
-      id: nanoid(),
-      serverId: server.id,
-      serverName: server.name
-    }))
+    const serverTools: MCPTool[] = []
+    tools.map((tool: any) => {
+      const serverTool: MCPTool = {
+        ...tool,
+        id: nanoid(),
+        serverId: server.id,
+        serverName: server.name
+      }
+      serverTools.push(serverTool)
+    })
+    CacheService.set(cacheKey, serverTools, 5 * 60 * 1000)
+    return serverTools
   }
 
   /**
