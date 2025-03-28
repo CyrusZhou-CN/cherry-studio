@@ -5,6 +5,7 @@ import { getBinaryName, getBinaryPath } from '@main/utils/process'
 import { Client } from '@modelcontextprotocol/sdk/client/index.js'
 import { SSEClientTransport } from '@modelcontextprotocol/sdk/client/sse.js'
 import { StdioClientTransport } from '@modelcontextprotocol/sdk/client/stdio.js'
+import { nanoid } from '@reduxjs/toolkit'
 import { MCPServer } from '@types'
 import { app } from 'electron'
 import Logger from 'electron-log'
@@ -151,6 +152,7 @@ class McpService {
     const { tools } = await client.listTools()
     return tools.map((tool) => ({
       ...tool,
+      id: nanoid(),
       serverId: server.id,
       serverName: server.name
     }))

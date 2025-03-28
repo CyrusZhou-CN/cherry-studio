@@ -61,7 +61,7 @@ export function mcpToolsToOpenAITools(mcpTools: MCPTool[]): Array<ChatCompletion
     type: 'function',
     name: tool.name,
     function: {
-      name: tool.serverId,
+      name: tool.id,
       description: tool.description,
       parameters: {
         type: 'object',
