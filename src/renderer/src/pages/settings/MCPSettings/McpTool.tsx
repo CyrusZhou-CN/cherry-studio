@@ -29,7 +29,7 @@ const MCPToolsSection = ({ tools }: { tools: MCPTool[] }) => {
 
     return (
       <div style={{ marginTop: 12 }}>
-        <Typography.Title level={5}>{t('settings.mcp.inputProperties')}:</Typography.Title>
+        <Typography.Title level={5}>{t('settings.mcp.tools.inputSchema')}:</Typography.Title>
         <Descriptions bordered size="small" column={1} style={{ marginTop: 8 }}>
           {Object.entries(tool.inputSchema.properties).map(([key, prop]: [string, any]) => (
             <Descriptions.Item
@@ -79,7 +79,7 @@ const MCPToolsSection = ({ tools }: { tools: MCPTool[] }) => {
 
   return (
     <Section>
-      <SectionTitle>{t('settings.mcp.availableTools')}</SectionTitle>
+      <SectionTitle>{t('settings.mcp.tools.availableTools')}</SectionTitle>
       {tools.length > 0 ? (
         <Collapse bordered={false} ghost>
           {tools.map((tool) => (
@@ -105,7 +105,7 @@ const MCPToolsSection = ({ tools }: { tools: MCPTool[] }) => {
           ))}
         </Collapse>
       ) : (
-        <Empty description={t('settings.mcp.noToolsAvailable')} image={Empty.PRESENTED_IMAGE_SIMPLE} />
+        <Empty description={t('settings.mcp.tools.noToolsAvailable')} image={Empty.PRESENTED_IMAGE_SIMPLE} />
       )}
     </Section>
   )
