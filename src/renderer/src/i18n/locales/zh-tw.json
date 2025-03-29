@@ -542,8 +542,17 @@
       "warn.siyuan.exporting": "正在導出到思源筆記，請勿重複請求導出！"
     },
     "minapp": {
+      "popup": {
+        "refresh": "重新整理",
+        "close": "關閉小工具",
+        "minimize": "最小化小工具",
+        "devtools": "開發者工具",
+        "openExternal": "在瀏覽器中開啟"
+      },
       "sidebar.add.title": "新增到側邊欄",
       "sidebar.remove.title": "從側邊欄移除",
+      "sidebar.close.title": "關閉",
+      "sidebar.closeall.title": "全部關閉",
       "sidebar.hide.title": "隱藏小工具",
       "title": "小工具"
     },
@@ -902,7 +911,8 @@
           "pathSelector.return": "返回",
           "pathSelector.currentPath": "當前路徑",
           "new_folder.button.confirm": "確定",
-          "new_folder.button.cancel": "取消"
+          "new_folder.button.cancel": "取消",
+          "new_folder.button": "新建文件夾"
         }
       },
       "display.assistant.title": "助手設定",
@@ -1011,7 +1021,14 @@
         "updateSuccess": "伺服器更新成功",
         "url": "URL",
         "editMcpJson": "編輯 MCP 配置",
-        "installHelp": "獲取安裝幫助"
+        "installHelp": "獲取安裝幫助",
+        "tools": {
+          "inputSchema": "輸入參數",
+          "availableTools": "可用工具",
+          "noToolsAvailable": "沒有可用工具"
+        },
+        "deleteServer": "刪除伺服器",
+        "deleteServerConfirm": "確定要刪除此伺服器嗎？"
       },
       "messages.divider": "訊息間顯示分隔線",
       "messages.grid_columns": "訊息網格展示列數",

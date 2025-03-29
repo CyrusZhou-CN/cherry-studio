@@ -542,8 +542,17 @@
       "warn.siyuan.exporting": "Экспортируется в Siyuan, пожалуйста, не отправляйте повторные запросы!"
     },
     "minapp": {
+      "popup": {
+        "refresh": "Обновить",
+        "close": "Закрыть встроенное приложение",
+        "minimize": "Свернуть встроенное приложение",
+        "devtools": "Инструменты разработчика",
+        "openExternal": "Открыть в браузере"
+      },
       "sidebar.add.title": "Добавить в боковую панель",
       "sidebar.remove.title": "Удалить из боковой панели",
+      "sidebar.close.title": "Закрыть",
+      "sidebar.closeall.title": "Закрыть все",
       "sidebar.hide.title": "Скрыть приложение",
       "title": "Встроенные приложения"
     },
@@ -902,7 +911,8 @@
           "pathSelector.return": "Назад",
           "pathSelector.currentPath": "Текущий путь",
           "new_folder.button.confirm": "Подтвердить",
-          "new_folder.button.cancel": "Отмена"
+          "new_folder.button.cancel": "Отмена",
+          "new_folder.button": "Новая папка"
         }
       },
       "display.assistant.title": "Настройки ассистентов",
@@ -1010,8 +1020,15 @@
         "updateError": "Ошибка обновления сервера",
         "updateSuccess": "Сервер успешно обновлен",
         "url": "URL",
-        "editMcpJson": "Редактировать MCP 配置",
-        "installHelp": "Получить помощь по установке"
+        "editMcpJson": "Редактировать MCP",
+        "installHelp": "Получить помощь по установке",
+        "tools": {
+          "inputSchema": "входные параметры",
+          "availableTools": "доступные инструменты",
+          "noToolsAvailable": "нет доступных инструментов"
+        },
+        "deleteServer": "Удалить сервер",
+        "deleteServerConfirm": "Вы уверены, что хотите удалить этот сервер?"
       },
       "messages.divider": "Показывать разделитель между сообщениями",
       "messages.grid_columns": "Количество столбцов сетки сообщений",
