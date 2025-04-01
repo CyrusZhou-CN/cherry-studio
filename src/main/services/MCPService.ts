@@ -5,7 +5,7 @@ import { isLinux, isMac, isWin } from '@main/constant'
 import { getBinaryName, getBinaryPath } from '@main/utils/process'
 import { Client } from '@modelcontextprotocol/sdk/client/index.js'
 import { SSEClientTransport } from '@modelcontextprotocol/sdk/client/sse.js'
-import { StdioClientTransport } from '@modelcontextprotocol/sdk/client/stdio.js'
+import { getDefaultEnvironment, StdioClientTransport } from '@modelcontextprotocol/sdk/client/stdio.js'
 import { nanoid } from '@reduxjs/toolkit'
 import { MCPServer, MCPTool } from '@types'
 import { app } from 'electron'
@@ -107,6 +107,7 @@ class McpService {
           command: cmd,
           args,
           env: {
+            ...getDefaultEnvironment(),
             PATH: this.getEnhancedPath(process.env.PATH || ''),
             ...server.env
           }
