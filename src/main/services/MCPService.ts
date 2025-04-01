@@ -69,13 +69,8 @@ class McpService {
       } else if (server.command) {
         let cmd = server.command
 
-        if (server.command === 'npx') {
+        if (server.command === 'npx' || server.command === 'bun' || server.command === 'bunx') {
           cmd = await getBinaryPath('bun')
-
-          if (cmd === 'bun') {
-            cmd = 'npx'
-          }
-
           Logger.info(`[MCP] Using command: ${cmd}`)
 
           // add -x to args if args exist
@@ -83,25 +78,20 @@ class McpService {
             if (!args.includes('-y')) {
               !args.includes('-y') && args.unshift('-y')
             }
-            if (cmd.includes('bun') && !args.includes('x')) {
+            if (!args.includes('x')) {
               args.unshift('x')
             }
           }
-        }
 
-        if (server.command === 'uvx') {
-          cmd = await getBinaryPath('uvx')
-        }
-
-        Logger.info(`[MCP] Starting server with command: ${cmd} ${args ? args.join(' ') : ''}`)
-
-        if (server.registryUrl) {
-          if (cmd.includes('npx') || cmd.includes('bun') || cmd.includes('bunx')) {
+          if (server.registryUrl) {
             server.env = {
               ...server.env,
               NPM_CONFIG_REGISTRY: server.registryUrl
             }
-          } else if (cmd.includes('uvx') || cmd.includes('uv')) {
+          }
+        } else if (server.command === 'uvx' || server.command === 'uv') {
+          cmd = await getBinaryPath(server.command)
+          if (server.registryUrl) {
             server.env = {
               ...server.env,
               UV_DEFAULT_INDEX: server.registryUrl,
@@ -110,6 +100,7 @@ class McpService {
           }
         }
 
+        Logger.info(`[MCP] Starting server with command: ${cmd} ${args ? args.join(' ') : ''}`)
         // Logger.info(`[MCP] Environment variables for server:`, server.env)
 
         transport = new StdioClientTransport({
@@ -251,6 +242,7 @@ class McpService {
         `${homeDir}/.npm-global/bin`,
         `${homeDir}/.yarn/bin`,
         `${homeDir}/.cargo/bin`,
+        `${homeDir}/.cherrystudio/bin`,
         '/opt/local/bin'
       )
     }
@@ -264,12 +256,18 @@ class McpService {
         `${homeDir}/.npm-global/bin`,
         `${homeDir}/.yarn/bin`,
         `${homeDir}/.cargo/bin`,
+        `${homeDir}/.cherrystudio/bin`,
         '/snap/bin'
       )
     }
 
     if (isWin) {
-      newPaths.push(`${process.env.APPDATA}\\npm`, `${homeDir}\\AppData\\Local\\Yarn\\bin`, `${homeDir}\\.cargo\\bin`)
+      newPaths.push(
+        `${process.env.APPDATA}\\npm`,
+        `${homeDir}\\AppData\\Local\\Yarn\\bin`,
+        `${homeDir}\\.cargo\\bin`,
+        `${homeDir}\\.cherrystudio\\bin`
+      )
     }
 
     // 只添加不存在的路径
