@@ -17,7 +17,7 @@ interface Props {
 interface MCPFormValues {
   name: string
   description?: string
-  serverType: 'sse' | 'stdio'
+  serverType: MCPServer['type']
   baseUrl?: string
   command?: string
   registryUrl?: string
@@ -42,19 +42,19 @@ const PipRegistry: Registry[] = [
 
 const McpSettings: React.FC<Props> = ({ server }) => {
   const { t } = useTranslation()
-  const { deleteMCPServer } = useMCPServers()
-  const [serverType, setServerType] = useState<'sse' | 'stdio'>('stdio')
+  const { deleteMCPServer, updateMCPServer } = useMCPServers()
+  const [serverType, setServerType] = useState<MCPServer['type']>('stdio')
   const [form] = Form.useForm<MCPFormValues>()
   const [loading, setLoading] = useState(false)
   const [isFormChanged, setIsFormChanged] = useState(false)
   const [loadingServer, setLoadingServer] = useState<string | null>(null)
-  const { updateMCPServer } = useMCPServers()
+
   const [tools, setTools] = useState<MCPTool[]>([])
   const [isShowRegistry, setIsShowRegistry] = useState(false)
   const [registry, setRegistry] = useState<Registry[]>()
 
   useEffect(() => {
-    const serverType = server.baseUrl ? 'sse' : 'stdio'
+    const serverType: MCPServer['type'] = server.type || (server.baseUrl ? 'sse' : 'stdio')
     setServerType(serverType)
 
     // Set registry UI state based on command and registryUrl
@@ -348,7 +348,8 @@ const McpSettings: React.FC<Props> = ({ server }) => {
               onChange={(e) => setServerType(e.target.value)}
               options={[
                 { label: 'STDIO', value: 'stdio' },
-                { label: 'SSE', value: 'sse' }
+                { label: 'SSE', value: 'sse' },
+                { label: 'InMemory', value: 'inMemory' }
               ]}
             />
           </Form.Item>
@@ -398,6 +399,17 @@ const McpSettings: React.FC<Props> = ({ server }) => {
                 </Form.Item>
               )}
 
+              <Form.Item name="args" label={t('settings.mcp.args')} tooltip={t('settings.mcp.argsTooltip')}>
+                <TextArea rows={3} placeholder={`arg1\narg2`} style={{ fontFamily: 'monospace' }} />
+              </Form.Item>
+
+              <Form.Item name="env" label={t('settings.mcp.env')} tooltip={t('settings.mcp.envTooltip')}>
+                <TextArea rows={3} placeholder={`KEY1=value1\nKEY2=value2`} style={{ fontFamily: 'monospace' }} />
+              </Form.Item>
+            </>
+          )}
+          {serverType === 'inMemory' && (
+            <>
               <Form.Item name="args" label={t('settings.mcp.args')} tooltip={t('settings.mcp.argsTooltip')}>
                 <TextArea rows={3} placeholder={`arg1\narg2`} style={{ fontFamily: 'monospace' }} />
               </Form.Item>

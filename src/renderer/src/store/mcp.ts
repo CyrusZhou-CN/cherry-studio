@@ -1,21 +1,8 @@
-import { createSlice, type PayloadAction } from '@reduxjs/toolkit'
-import { nanoid } from '@reduxjs/toolkit'
+import { createSlice, nanoid, type PayloadAction } from '@reduxjs/toolkit'
 import type { MCPConfig, MCPServer } from '@renderer/types'
 
-const initialState: MCPConfig = {
-  servers: [
-    {
-      id: nanoid(),
-      name: 'mcp-auto-install',
-      description: 'Automatically install MCP services (Beta version)',
-      baseUrl: '',
-      command: 'npx',
-      args: ['-y', '@mcpmarket/mcp-auto-install', 'connect', '--json'],
-      registryUrl: 'https://registry.npmmirror.com',
-      env: {},
-      isActive: false
-    }
-  ]
+export const initialState: MCPConfig = {
+  servers: []
 }
 
 const mcpSlice = createSlice({
@@ -63,3 +50,41 @@ export const selectMCP = (state: { mcp: MCPConfig }) => state.mcp
 export { mcpSlice }
 // Export the reducer as default export
 export default mcpSlice.reducer
+
+export const builtinMCPServers: MCPServer[] = [
+  {
+    id: nanoid(),
+    name: 'builtin:mcp-auto-install',
+    description: 'Automatically install MCP services (Beta version)',
+    command: 'npx',
+    args: ['-y', '@mcpmarket/mcp-auto-install', 'connect', '--json'],
+    isActive: false
+  },
+  {
+    id: nanoid(),
+    name: 'builtin:@modelcontextprotocol/server-memory',
+    type: 'inMemory',
+    description:
+      'A basic implementation of persistent memory using a local knowledge graph. This lets Claude remember information about the user across chats. https://github.com/modelcontextprotocol/servers/tree/main/src/memory',
+    isActive: false
+  }
+]
+
+/**
+ * Utility function to add servers to the MCP store during app initialization
+ * @param servers Array of MCP servers to add
+ * @param dispatch Redux dispatch function
+ */
+export const initializeMCPServers = (existingServers: MCPServer[], dispatch: (action: any) => void): void => {
+  // Check if the existing servers already contain the built-in servers
+  const serverIds = new Set(existingServers.map((server) => server.name))
+
+  // Filter out any built-in servers that are already present
+  const newServers = builtinMCPServers.filter((server) => !serverIds.has(server.name))
+
+  console.log('Adding new servers:', newServers)
+  // Add the new built-in servers to the existing servers
+  newServers.forEach((server) => {
+    dispatch(addMCPServer(server))
+  })
+}
