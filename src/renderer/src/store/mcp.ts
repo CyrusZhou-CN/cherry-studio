@@ -66,6 +66,44 @@ export const builtinMCPServers: MCPServer[] = [
     type: 'inMemory',
     description:
       'A basic implementation of persistent memory using a local knowledge graph. This lets Claude remember information about the user across chats. https://github.com/modelcontextprotocol/servers/tree/main/src/memory',
+    isActive: true
+  },
+  {
+    id: nanoid(),
+    name: '@cherry/sequentialthinking',
+    type: 'inMemory',
+    description:
+      'An MCP server implementation that provides a tool for dynamic and reflective problem-solving through a structured thinking process.',
+    isActive: true
+  },
+  {
+    id: nanoid(),
+    name: '@cherry/brave-search',
+    type: 'inMemory',
+    description:
+      'An MCP server implementation that integrates the Brave Search API, providing both web and local search capabilities.',
+    isActive: false
+  },
+  {
+    id: nanoid(),
+    name: '@cherry/everything',
+    type: 'inMemory',
+    description:
+      'This MCP server attempts to exercise all the features of the MCP protocol. It is not intended to be a useful server, but rather a test server for builders of MCP clients. It implements prompts, tools, resources, sampling, and more to showcase MCP capabilities.',
+    isActive: true
+  },
+  {
+    id: nanoid(),
+    name: '@cherry/fetch',
+    type: 'inMemory',
+    description: 'An MCP server for fetching URLs / Youtube video transcript.',
+    isActive: true
+  },
+  {
+    id: nanoid(),
+    name: '@cherry/filesystem',
+    type: 'inMemory',
+    description: 'Node.js server implementing Model Context Protocol (MCP) for filesystem operations.',
     isActive: false
   }
 ]

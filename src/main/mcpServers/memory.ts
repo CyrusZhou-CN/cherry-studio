@@ -194,9 +194,7 @@ class MemoryServer {
   public server: Server
   private knowledgeGraphManager: KnowledgeGraphManager
 
-  constructor(envs: Record<string, string> = {}) {
-    // If MEMORY_FILE_PATH is just a filename, put it in the same directory as the script
-    const envPath = envs.MEMORY_FILE_PATH || process.env.MEMORY_FILE_PATH
+  constructor(envPath: string = '') {
     const memoryPath = envPath
       ? path.isAbsolute(envPath)
         ? envPath
