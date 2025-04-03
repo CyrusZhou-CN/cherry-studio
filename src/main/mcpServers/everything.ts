@@ -467,7 +467,13 @@ export const createServer = () => {
     if (name === ToolName.ANNOTATED_MESSAGE) {
       const { messageType, includeImage } = AnnotatedMessageSchema.parse(args)
 
-      const content = []
+      const content: Array<{
+        type: string
+        text?: string
+        data?: string
+        mimeType?: string
+        annotations?: { priority: number; audience: string[] }
+      }> = []
 
       // Main message with different priorities/audiences based on type
       if (messageType === 'error') {

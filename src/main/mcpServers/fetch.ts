@@ -76,8 +76,8 @@ export class Fetcher {
 
       const scripts = document.getElementsByTagName('script')
       const styles = document.getElementsByTagName('style')
-      Array.from(scripts).forEach((script) => script.remove())
-      Array.from(styles).forEach((style) => style.remove())
+      Array.from(scripts).forEach((script: any) => script.remove())
+      Array.from(styles).forEach((style: any) => style.remove())
 
       const text = document.body.textContent || ''
 
