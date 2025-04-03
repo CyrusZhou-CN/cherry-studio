@@ -214,6 +214,7 @@ class MemoryServer {
         }
       }
     )
+    this.initialize()
   }
 
   initialize() {
