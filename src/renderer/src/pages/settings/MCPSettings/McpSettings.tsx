@@ -136,6 +136,7 @@ const McpSettings: React.FC<Props> = ({ server }) => {
       const mcpServer: MCPServer = {
         id: server.id,
         name: values.name,
+        type: values.serverType,
         description: values.description,
         isActive: values.isActive,
         registryUrl: values.registryUrl
