@@ -3226,6 +3226,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/diff@npm:^7":
+  version: 7.0.2
+  resolution: "@types/diff@npm:7.0.2"
+  checksum: 10c0/ac4de3f982242292e006ace98a9d41363ebc244145939466139828ffa6c476acc15eea2bad39bd7e0868003c497614f6d7e734d4999c4f09d95dfd173d24d723
+  languageName: node
+  linkType: hard
+
 "@types/estree-jsx@npm:^1.0.0":
   version: 1.0.5
   resolution: "@types/estree-jsx@npm:1.0.5"
@@ -3777,6 +3784,7 @@ __metadata:
     "@tavily/core": "patch:@tavily/core@npm%3A0.3.1#~/.yarn/patches/@tavily-core-npm-0.3.1-fe69bf2bea.patch"
     "@tryfabric/martian": "npm:^1.2.4"
     "@types/adm-zip": "npm:^0"
+    "@types/diff": "npm:^7"
     "@types/fs-extra": "npm:^11"
     "@types/lodash": "npm:^4.17.5"
     "@types/markdown-it": "npm:^14"
@@ -3798,6 +3806,7 @@ __metadata:
     dayjs: "npm:^1.11.11"
     dexie: "npm:^4.0.8"
     dexie-react-hooks: "npm:^1.1.7"
+    diff: "npm:^7.0.0"
     docx: "npm:^9.0.2"
     dotenv-cli: "npm:^7.4.2"
     electron: "npm:31.7.6"
@@ -5901,6 +5910,13 @@ __metadata:
   version: 4.0.11
   resolution: "dexie@npm:4.0.11"
   checksum: 10c0/f8f18e17fe99fd3d4bd80a4ff76c0a543be128bb65a11b6b34297c6ab2d7426989567a8eac09b0de6b483bfb776cbbb32bebe3eedcd5c572ddda80224aac1fa1
+  languageName: node
+  linkType: hard
+
+"diff@npm:^7.0.0":
+  version: 7.0.0
+  resolution: "diff@npm:7.0.0"
+  checksum: 10c0/251fd15f85ffdf814cfc35a728d526b8d2ad3de338dcbd011ac6e57c461417090766b28995f8ff733135b5fbc3699c392db1d5e27711ac4e00244768cd1d577b
   languageName: node
   linkType: hard
 
