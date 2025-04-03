@@ -278,6 +278,35 @@ const McpSettings: React.FC<Props> = ({ server }) => {
     }
   }
 
+  // Handle toggling a tool on/off
+  const handleToggleTool = useCallback(
+    async (tool: MCPTool, enabled: boolean) => {
+      // Create a new disabledTools array or use the existing one
+      let disabledTools = [...(server.disabledTools || [])]
+
+      if (enabled) {
+        // Remove tool from disabledTools if it's being enabled
+        disabledTools = disabledTools.filter((name) => name !== tool.name)
+      } else {
+        // Add tool to disabledTools if it's being disabled
+        if (!disabledTools.includes(tool.name)) {
+          disabledTools.push(tool.name)
+        }
+      }
+
+      // Update the server with new disabledTools
+      const updatedServer = {
+        ...server,
+        disabledTools
+      }
+
+      // Save the updated server configuration
+      // await window.api.mcp.updateServer(updatedServer)
+      updateMCPServer(updatedServer)
+    },
+    [server, updateMCPServer]
+  )
+
   return (
     <SettingContainer>
       <SettingGroup style={{ marginBottom: 0 }}>
@@ -380,7 +409,7 @@ const McpSettings: React.FC<Props> = ({ server }) => {
             </>
           )}
         </Form>
-        {server.isActive && <MCPToolsSection tools={tools} />}
+        {server.isActive && <MCPToolsSection tools={tools} server={server} onToggleTool={handleToggleTool} />}
       </SettingGroup>
     </SettingContainer>
   )
