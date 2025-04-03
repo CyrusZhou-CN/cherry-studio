@@ -54,7 +54,7 @@ export default mcpSlice.reducer
 export const builtinMCPServers: MCPServer[] = [
   {
     id: nanoid(),
-    name: 'builtin:mcp-auto-install',
+    name: '@cherry/mcp-auto-install',
     description: 'Automatically install MCP services (Beta version)',
     command: 'npx',
     args: ['-y', '@mcpmarket/mcp-auto-install', 'connect', '--json'],
@@ -62,7 +62,7 @@ export const builtinMCPServers: MCPServer[] = [
   },
   {
     id: nanoid(),
-    name: 'builtin:@modelcontextprotocol/server-memory',
+    name: '@cherry/memory',
     type: 'inMemory',
     description:
       'A basic implementation of persistent memory using a local knowledge graph. This lets Claude remember information about the user across chats. https://github.com/modelcontextprotocol/servers/tree/main/src/memory',
