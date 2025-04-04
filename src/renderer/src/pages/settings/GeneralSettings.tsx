@@ -12,6 +12,7 @@ import { FC, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { SettingContainer, SettingDivider, SettingGroup, SettingRow, SettingRowTitle, SettingTitle } from '.'
+import { defaultLanguage } from '@shared/config/constant'
 
 const GeneralSettings: FC = () => {
   const {

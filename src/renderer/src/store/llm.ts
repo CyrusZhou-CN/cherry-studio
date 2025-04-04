@@ -4,6 +4,7 @@ import { SYSTEM_MODELS } from '@renderer/config/models'
 import { Model, Provider } from '@renderer/types'
 import { IpcChannel } from '@shared/IpcChannel'
 import { uniqBy } from 'lodash'
+import { IpcChannel } from '@shared/IpcChannel'
 
 type LlmSettings = {
   ollama: {

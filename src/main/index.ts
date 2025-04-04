@@ -10,6 +10,7 @@ import { CHERRY_STUDIO_PROTOCOL, handleProtocolUrl, registerProtocolClient } fro
 import { registerShortcuts } from './services/ShortcutService'
 import { TrayService } from './services/TrayService'
 import { windowService } from './services/WindowService'
+import { IpcChannel } from '@shared/IpcChannel'
 
 // Check for single instance lock
 if (!app.requestSingleInstanceLock()) {

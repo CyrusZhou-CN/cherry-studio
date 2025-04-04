@@ -28,6 +28,7 @@ import { getResourcePath } from './utils'
 import { decrypt, encrypt } from './utils/aes'
 import { getConfigDir, getFilesDir } from './utils/file'
 import { compress, decompress } from './utils/zip'
+import { IpcChannel } from '@shared/IpcChannel'
 
 const fileManager = new FileStorage()
 const backupManager = new BackupManager()
@@ -304,3 +305,11 @@ export function registerIpc(mainWindow: BrowserWindow, app: Electron.App) {
     NutstoreService.getDirectoryContents(token, path)
   )
 }
+
+  // Listen for changes in MCP servers and notify renderer
+  mcpService.on('servers-updated', (servers) => {
+    mainWindow?.webContents.send(IpcChannel.Mcp_ServersUpdated, servers)
+  })
+
+app.on('before-quit', () => mcpService.cleanup())
+  

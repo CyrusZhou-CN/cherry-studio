@@ -45,6 +45,7 @@ import OpenAI from 'openai'
 
 import { ChunkCallbackData, CompletionsParams } from '.'
 import BaseProvider from './BaseProvider'
+import { MB } from '@shared/config/constant'
 
 export default class GeminiProvider extends BaseProvider {
   private sdk: GoogleGenerativeAI

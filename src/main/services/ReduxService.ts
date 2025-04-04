@@ -3,6 +3,7 @@ import { ipcMain } from 'electron'
 import { EventEmitter } from 'events'
 
 import { windowService } from './WindowService'
+import { IpcChannel } from '@shared/IpcChannel'
 
 type StoreValue = any
 type Unsubscribe = () => void
