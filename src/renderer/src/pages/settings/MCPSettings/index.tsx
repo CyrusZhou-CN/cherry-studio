@@ -38,12 +38,8 @@ const MCPSettings: FC = () => {
     return () => unsubs.forEach((unsub) => unsub())
   }, [])
 
-  const initializeRef = useRef(false)
   useEffect(() => {
-    if (!initializeRef.current) {
-      initializeMCPServers(mcpServers, dispatch)
-      initializeRef.current = true
-    }
+    initializeMCPServers(mcpServers, dispatch)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []) // Empty dependency array to run only once
 
