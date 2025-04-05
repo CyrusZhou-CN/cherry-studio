@@ -285,7 +285,9 @@ const McpSettings: React.FC<Props> = ({ server }) => {
         <SettingTitle>
           <Flex justify="space-between" align="center" gap={5} style={{ marginRight: 10 }}>
             <ServerName className="text-nowrap">{server?.name}</ServerName>
-            <Button danger icon={<DeleteOutlined />} type="text" onClick={() => onDeleteMcpServer(server)} />
+            {!(server.type === 'inMemory') && (
+              <Button danger icon={<DeleteOutlined />} type="text" onClick={() => onDeleteMcpServer(server)} />
+            )}
           </Flex>
           <Flex align="center" gap={16}>
             <Switch
