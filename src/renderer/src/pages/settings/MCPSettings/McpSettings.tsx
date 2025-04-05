@@ -103,7 +103,7 @@ const McpSettings: React.FC<Props> = ({ server }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [form.getFieldValue('serverType')])
 
-  const fetchTools = useCallback(async () => {
+  const fetchTools = async () => {
     if (server.isActive) {
       try {
         setLoadingServer(server.id)
@@ -119,15 +119,14 @@ const McpSettings: React.FC<Props> = ({ server }) => {
         setLoadingServer(null)
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [server.id])
+  }
 
   useEffect(() => {
-    console.log('Loading tools for server:', server.id, 'Active:', server.isActive)
     if (server.isActive) {
       fetchTools()
     }
-  }, [server.id, server.isActive, fetchTools])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [server.id, server.isActive])
 
   // Save the form data
   const onSave = async () => {
@@ -172,7 +171,6 @@ const McpSettings: React.FC<Props> = ({ server }) => {
         await window.api.mcp.restartServer(mcpServer)
         updateMCPServer({ ...mcpServer, isActive: true })
         window.message.success({ content: t('settings.mcp.updateSuccess'), key: 'mcp-update-success' })
-        await fetchTools()
         setLoading(false)
         setIsFormChanged(false)
       } catch (error: any) {
