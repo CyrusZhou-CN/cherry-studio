@@ -322,9 +322,9 @@ const McpSettings: React.FC<Props> = ({ server }) => {
             <Radio.Group
               onChange={(e) => setServerType(e.target.value)}
               options={[
-                { label: 'STDIO', value: 'stdio' },
-                { label: 'SSE', value: 'sse' },
-                { label: 'InMemory', value: 'inMemory' }
+                { label: t('settings.mcp.stdio'), value: 'stdio' },
+                { label: t('settings.mcp.sse'), value: 'sse' },
+                { label: t('settings.mcp.inMemory'), value: 'inMemory' }
               ]}
             />
           </Form.Item>
