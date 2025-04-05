@@ -4,7 +4,6 @@ import { IpcChannel } from '@shared/IpcChannel'
 import type { ProgressInfo, UpdateInfo } from 'builder-util-runtime'
 import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-import { IpcChannel } from '@shared/IpcChannel'
 
 export default function useUpdateHandler() {
   const dispatch = useAppDispatch()

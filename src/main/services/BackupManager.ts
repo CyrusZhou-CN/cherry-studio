@@ -10,7 +10,6 @@ import { createClient, CreateDirectoryOptions, FileStat } from 'webdav'
 
 import WebDav from './WebDav'
 import { windowService } from './WindowService'
-import { IpcChannel } from '@shared/IpcChannel'
 
 class BackupManager {
   private tempDir = path.join(app.getPath('temp'), 'cherry-studio', 'backup', 'temp')

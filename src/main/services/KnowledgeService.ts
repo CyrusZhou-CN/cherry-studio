@@ -33,8 +33,6 @@ import { FileType, KnowledgeBaseParams, KnowledgeItem } from '@types'
 import { app } from 'electron'
 import Logger from 'electron-log'
 import { v4 as uuidv4 } from 'uuid'
-import { IpcChannel } from '@shared/IpcChannel'
-import { MB } from '@shared/config/constant'
 
 export interface KnowledgeBaseAddItemOptions {
   base: KnowledgeBaseParams

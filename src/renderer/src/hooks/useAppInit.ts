@@ -16,8 +16,6 @@ import { useRuntime } from './useRuntime'
 import { useSettings } from './useSettings'
 import useUpdateHandler from './useUpdateHandler'
 
-import { defaultLanguage } from '@shared/config/constant'
-
 export function useAppInit() {
   const dispatch = useAppDispatch()
   const { proxyUrl, language, windowStyle, autoCheckUpdate, proxyMode, customCss } = useSettings()

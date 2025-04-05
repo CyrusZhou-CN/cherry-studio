@@ -8,7 +8,6 @@ import * as htmlToImage from 'html-to-image'
 import { v4 as uuidv4 } from 'uuid'
 
 import { classNames } from './style'
-import { KB, MB } from '@shared/config/constant'
 
 export const runAsyncFunction = async (fn: () => void) => {
   await fn()

@@ -3,7 +3,6 @@ import { useSettings } from '@renderer/hooks/useSettings'
 import { ThemeMode } from '@renderer/types'
 import { IpcChannel } from '@shared/IpcChannel'
 import React, { createContext, PropsWithChildren, use, useEffect, useState } from 'react'
-import { IpcChannel } from '@shared/IpcChannel'
 
 interface ThemeContextType {
   theme: ThemeMode

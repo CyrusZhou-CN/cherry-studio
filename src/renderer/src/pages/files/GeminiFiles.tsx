@@ -9,7 +9,6 @@ import { FC, useCallback, useEffect, useState } from 'react'
 import styled from 'styled-components'
 
 import FileItem from './FileItem'
-import { MB } from '@shared/config/constant'
 
 interface GeminiFilesProps {
   id: string
