@@ -374,6 +374,7 @@ export interface MCPServer {
   args?: string[]
   env?: Record<string, string>
   isActive: boolean
+  disabledTools?: string[] // List of tool names that are disabled for this server
 }
 
 export interface MCPToolInputSchema {
