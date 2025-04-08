@@ -1,4 +1,3 @@
-import { GroundingMetadata } from '@google/generative-ai'
 import OpenAI from 'openai'
 import React from 'react'
 import { BuiltinTheme } from 'shiki'
@@ -73,7 +72,7 @@ export type Message = {
   enabledMCPs?: MCPServer[]
   metadata?: {
     // Gemini
-    groundingMetadata?: GroundingMetadata
+    groundingMetadata?: any
     // Perplexity Or Openrouter
     citations?: string[]
     // OpenAI
@@ -417,4 +416,13 @@ export interface QuickPhrase {
   createdAt: number
   updatedAt: number
   order?: number
+}
+
+export type TTSProvider = {
+  id: string
+  name: string
+  apiKey?: string
+  apiUrl?: string
+  voice?: string
+  model?: string
 }
