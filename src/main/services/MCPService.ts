@@ -39,6 +39,7 @@ class McpService {
     this.removeServer = this.removeServer.bind(this)
     this.restartServer = this.restartServer.bind(this)
     this.stopServer = this.stopServer.bind(this)
+    this.cleanup = this.cleanup.bind(this)
   }
 
   async initClient(server: MCPServer): Promise<Client> {
@@ -147,8 +148,12 @@ class McpService {
             ...getDefaultEnvironment(),
             PATH: this.getEnhancedPath(process.env.PATH || ''),
             ...server.env
-          }
+          },
+          stderr: 'pipe'
         })
+        transport.stderr?.on('data', (data) =>
+          Logger.info(`[MCP] Stdio stderr for server: ${server.name} `, data.toString())
+        )
       } else {
         throw new Error('Either baseUrl or command must be provided')
       }
@@ -199,6 +204,16 @@ class McpService {
     const serverKey = this.getServerKey(server)
     await this.closeClient(serverKey)
     await this.initClient(server)
+  }
+
+  async cleanup() {
+    for (const [key] of this.clients) {
+      try {
+        await this.closeClient(key)
+      } catch (error) {
+        Logger.error(`[MCP] Failed to close client: ${error}`)
+      }
+    }
   }
 
   async listTools(_: Electron.IpcMainInvokeEvent, server: MCPServer) {
@@ -320,4 +335,5 @@ class McpService {
   }
 }
 
-export default new McpService()
+const mcpService = new McpService()
+export default mcpService
