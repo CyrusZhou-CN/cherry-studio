@@ -10,7 +10,7 @@ import { SSEClientTransport } from '@modelcontextprotocol/sdk/client/sse.js'
 import { getDefaultEnvironment, StdioClientTransport } from '@modelcontextprotocol/sdk/client/stdio.js'
 import { InMemoryTransport } from '@modelcontextprotocol/sdk/inMemory'
 import { nanoid } from '@reduxjs/toolkit'
-import { GetMCPPromptResponse, MCPPrompt, MCPServer, MCPTool } from '@types'
+import { GetMCPPromptResponse, MCPPrompt, MCPResource, MCPServer, MCPTool } from '@types'
 import { app } from 'electron'
 import Logger from 'electron-log'
 
@@ -71,6 +71,8 @@ class McpService {
     this.callTool = this.callTool.bind(this)
     this.listPrompts = this.listPrompts.bind(this)
     this.getPrompt = this.getPrompt.bind(this)
+    this.listResources = this.listResources.bind(this)
+    this.getResource = this.getResource.bind(this)
     this.closeClient = this.closeClient.bind(this)
     this.removeServer = this.removeServer.bind(this)
     this.restartServer = this.restartServer.bind(this)
@@ -383,6 +385,76 @@ class McpService {
       `[MCP] Prompt ${name} from ${server.name}`
     )
     return await cachedGetPrompt(server, name, args)
+  }
+
+  /**
+   * List resources available on an MCP server (implementation)
+   */
+  private async listResourcesImpl(server: MCPServer): Promise<MCPResource[]> {
+    Logger.info(`[MCP] Listing resources for server: ${server.name}`)
+    const client = await this.initClient(server)
+    try {
+      const result = await client.listResources()
+      const resources = result.resources || []
+      const serverResources = (Array.isArray(resources) ? resources : []).map((resource: any) => ({
+        ...resource,
+        serverId: server.id,
+        serverName: server.name
+      }))
+      return serverResources
+    } catch (error) {
+      Logger.error(`[MCP] Failed to list resources for server: ${server.name}`, error)
+      return []
+    }
+  }
+
+  /**
+   * List resources available on an MCP server with caching
+   */
+  public async listResources(_: Electron.IpcMainInvokeEvent, server: MCPServer): Promise<MCPResource[]> {
+    const cachedListResources = withCache<[MCPServer], MCPResource[]>(
+      this.listResourcesImpl.bind(this),
+      (server) => {
+        const serverKey = this.getServerKey(server)
+        return `mcp:list_resources:${serverKey}`
+      },
+      60 * 60 * 1000, // 60 minutes TTL
+      `[MCP] Resources from ${server.name}`
+    )
+    return cachedListResources(server)
+  }
+
+  /**
+   * Get a specific resource from an MCP server (implementation)
+   */
+  private async getResourceImpl(server: MCPServer, uri: string): Promise<MCPResource> {
+    Logger.info(`[MCP] Getting resource ${uri} from server: ${server.name}`)
+    const client = await this.initClient(server)
+    const result = await client.readResource({ uri: uri })
+    return {
+      serverId: server.id,
+      serverName: server.name,
+      ...(result as any)
+    }
+  }
+
+  /**
+   * Get a specific resource from an MCP server with caching
+   */
+  public async getResource(
+    _: Electron.IpcMainInvokeEvent,
+    { server, uri }: { server: MCPServer; uri: string }
+  ): Promise<MCPResource> {
+    const cachedGetResource = withCache<[MCPServer, string], MCPResource>(
+      this.getResourceImpl.bind(this),
+      (server, uri) => {
+        const serverKey = this.getServerKey(server)
+        return `mcp:get_resource:${serverKey}:${uri}`
+      },
+      30 * 60 * 1000, // 30 minutes TTL
+      `[MCP] Resource ${uri} from ${server.name}`
+    )
+    return await cachedGetResource(server, uri)
   }
 
   /**
