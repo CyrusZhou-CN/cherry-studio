@@ -454,6 +454,10 @@ export interface MCPResource {
   blob?: string
 }
 
+export interface GetResourceResponse {
+  contents: MCPResource[]
+}
+
 export interface QuickPhrase {
   id: string
   title: string

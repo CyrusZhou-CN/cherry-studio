@@ -162,7 +162,7 @@ declare global {
           args?: Record<string, any>
         }) => Promise<GetMCPPromptResponse>
         listResources: (server: MCPServer) => Promise<MCPResource[]>
-        getResource: ({ server, uri }: { server: MCPServer; uri: string }) => Promise<MCPResource>
+        getResource: ({ server, uri }: { server: MCPServer; uri: string }) => Promise<GetResourceResponse>
         getInstallInfo: () => Promise<{ dir: string; uvPath: string; bunPath: string }>
       }
       copilot: {

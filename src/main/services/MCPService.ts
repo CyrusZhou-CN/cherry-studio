@@ -10,7 +10,7 @@ import { SSEClientTransport } from '@modelcontextprotocol/sdk/client/sse.js'
 import { getDefaultEnvironment, StdioClientTransport } from '@modelcontextprotocol/sdk/client/stdio.js'
 import { InMemoryTransport } from '@modelcontextprotocol/sdk/inMemory'
 import { nanoid } from '@reduxjs/toolkit'
-import { GetMCPPromptResponse, MCPPrompt, MCPResource, MCPServer, MCPTool } from '@types'
+import { GetMCPPromptResponse, GetResourceResponse, MCPPrompt, MCPResource, MCPServer, MCPTool } from '@types'
 import { app } from 'electron'
 import Logger from 'electron-log'
 
@@ -119,9 +119,9 @@ class McpService {
         try {
           await inMemoryServer.connect(serverTransport)
           Logger.info(`[MCP] In-memory server started: ${server.name}`)
-        } catch (error) {
+        } catch (error: Error | any) {
           Logger.error(`[MCP] Error starting in-memory server: ${error}`)
-          throw new Error(`Failed to start in-memory server: ${error}`)
+          throw new Error(`Failed to start in-memory server: ${error.message}`)
         }
         // set the client transport to the client
         transport = clientTransport
@@ -205,7 +205,7 @@ class McpService {
       return client
     } catch (error: any) {
       Logger.error(`[MCP] Error activating server ${server.name}:`, error)
-      throw error
+      throw new Error(`[MCP] Error activating server ${server.name}: ${error.message}`)
     }
   }
 
@@ -427,14 +427,27 @@ class McpService {
   /**
    * Get a specific resource from an MCP server (implementation)
    */
-  private async getResourceImpl(server: MCPServer, uri: string): Promise<MCPResource> {
+  private async getResourceImpl(server: MCPServer, uri: string): Promise<GetResourceResponse> {
     Logger.info(`[MCP] Getting resource ${uri} from server: ${server.name}`)
     const client = await this.initClient(server)
-    const result = await client.readResource({ uri: uri })
-    return {
-      serverId: server.id,
-      serverName: server.name,
-      ...(result as any)
+    try {
+      const result = await client.readResource({ uri: uri })
+      const contents: MCPResource[] = []
+      if (result.contents && result.contents.length > 0) {
+        result.contents.forEach((content: any) => {
+          contents.push({
+            ...content,
+            serverId: server.id,
+            serverName: server.name
+          })
+        })
+      }
+      return {
+        contents: contents
+      }
+    } catch (error: Error | any) {
+      Logger.error(`[MCP] Failed to get resource ${uri} from server: ${server.name}`, error)
+      throw new Error(`Failed to get resource ${uri} from server: ${server.name}: ${error.message}`)
     }
   }
 
@@ -444,8 +457,8 @@ class McpService {
   public async getResource(
     _: Electron.IpcMainInvokeEvent,
     { server, uri }: { server: MCPServer; uri: string }
-  ): Promise<MCPResource> {
-    const cachedGetResource = withCache<[MCPServer, string], MCPResource>(
+  ): Promise<GetResourceResponse> {
+    const cachedGetResource = withCache<[MCPServer, string], GetResourceResponse>(
       this.getResourceImpl.bind(this),
       (server, uri) => {
         const serverKey = this.getServerKey(server)
