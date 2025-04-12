@@ -3,7 +3,7 @@ import { QuickPanelListItem, useQuickPanel } from '@renderer/components/QuickPan
 import { useMCPServers } from '@renderer/hooks/useMCPServers'
 import { MCPPrompt, MCPResource, MCPServer } from '@renderer/types'
 import { Form, Input, Modal, Tooltip } from 'antd'
-import { FC, useCallback, useImperativeHandle, useMemo, useState } from 'react'
+import { FC, useCallback, useEffect, useImperativeHandle, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router'
 
