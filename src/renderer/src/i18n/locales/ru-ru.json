@@ -43,6 +43,7 @@
       "edit.title": "Редактировать ассистента",
       "save.success": "Успешно сохранено",
       "save.title": "Сохранить в агента",
+      "icon.type": "Иконка ассистента",
       "search": "Поиск ассистентов...",
       "settings.mcp": "Серверы MCP",
       "settings.mcp.enableFirst": "Сначала включите этот сервер в настройках MCP",
@@ -787,7 +788,10 @@
       "advanced.title": "Расширенные настройки",
       "assistant": "Ассистент по умолчанию",
       "assistant.model_params": "Параметры модели",
-      "assistant.show.icon": "Показывать модельный иконки",
+      "assistant.icon.type": "Тип модели иконки",
+      "assistant.icon.type.model": "Модель иконки",
+      "assistant.icon.type.emoji": "Emoji иконка",
+      "assistant.icon.type.none": "Не отображать",
       "assistant.title": "Ассистент по умолчанию",
       "data": {
         "app_data": "Данные приложения",
@@ -1063,7 +1067,6 @@
         "newServer": "MCP сервер",
         "npx_list": {
           "actions": "Действия",
-          "desc": "Поиск и добавление npm пакетов в качестве MCP серверов",
           "description": "Описание",
           "no_packages": "Ничего не найдено",
           "npm": "NPM",
@@ -1072,7 +1075,6 @@
           "scope_required": "Пожалуйста, введите область npm",
           "search": "Поиск",
           "search_error": "Ошибка поиска",
-          "title": "Список пакетов NPX",
           "usage": "Использование",
           "version": "Версия"
         },
@@ -1098,14 +1100,16 @@
         "tools": {
           "inputSchema": "Схема ввода",
           "availableTools": "Доступные инструменты",
-          "noToolsAvailable": "Нет доступных инструментов"
+          "noToolsAvailable": "Нет доступных инструментов",
+          "loadError": "Ошибка получения инструментов"
         },
         "prompts": {
           "availablePrompts": "Доступные подсказки",
           "noPromptsAvailable": "Нет доступных подсказок",
           "arguments": "Аргументы",
           "requiredField": "Обязательное поле",
-          "genericError": "Ошибка получения подсказки"
+          "genericError": "Ошибка получения подсказки",
+          "loadError": "Ошибка получения подсказок"
         },
         "deleteServer": "Удалить сервер",
         "deleteServerConfirm": "Вы уверены, что хотите удалить этот сервер?",

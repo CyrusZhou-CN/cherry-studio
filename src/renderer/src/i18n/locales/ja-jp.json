@@ -43,6 +43,7 @@
       "edit.title": "アシスタントを編集",
       "save.success": "保存に成功しました",
       "save.title": "エージェントに保存",
+      "icon.type": "アシスタントアイコン",
       "search": "アシスタントを検索...",
       "settings.mcp": "MCP サーバー",
       "settings.mcp.enableFirst": "まず MCP 設定でこのサーバーを有効にしてください",
@@ -787,7 +788,10 @@
       "advanced.title": "詳細設定",
       "assistant": "デフォルトアシスタント",
       "assistant.model_params": "モデルパラメータ",
-      "assistant.show.icon": "モデルアイコンを表示",
+      "assistant.icon.type": "モデルアイコンタイプ",
+      "assistant.icon.type.model": "モデルアイコン",
+      "assistant.icon.type.emoji": "Emoji アイコン",
+      "assistant.icon.type.none": "表示しない",
       "assistant.title": "デフォルトアシスタント",
       "data": {
         "app_data": "アプリデータ",
@@ -1063,7 +1067,6 @@
         "newServer": "MCP サーバー",
         "npx_list": {
           "actions": "アクション",
-          "desc": "npm パッケージを検索して MCP サーバーとして追加",
           "description": "説明",
           "no_packages": "パッケージが見つかりません",
           "npm": "NPM",
@@ -1072,7 +1075,6 @@
           "scope_required": "npm スコープを入力してください",
           "search": "検索",
           "search_error": "パッケージの検索に失敗しました",
-          "title": "NPX パッケージリスト",
           "usage": "使用法",
           "version": "バージョン"
         },
@@ -1098,14 +1100,16 @@
         "tools": {
           "inputSchema": "入力スキーマ",
           "availableTools": "利用可能なツール",
-          "noToolsAvailable": "利用可能なツールなし"
+          "noToolsAvailable": "利用可能なツールなし",
+          "loadError": "ツール取得エラー"
         },
         "prompts": {
           "availablePrompts": "利用可能なプロンプト",
           "noPromptsAvailable": "利用可能なプロンプトはありません",
           "arguments": "引数",
           "requiredField": "必須フィールド",
-          "genericError": "プロンプト取得エラー"
+          "genericError": "プロンプト取得エラー",
+          "loadError": "プロンプト取得エラー"
         },
         "deleteServer": "サーバーを削除",
         "deleteServerConfirm": "このサーバーを削除してもよろしいですか？",
