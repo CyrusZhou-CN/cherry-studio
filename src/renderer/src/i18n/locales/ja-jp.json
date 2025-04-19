@@ -560,6 +560,7 @@
         "error": "エラーが発生しました"
       },
       "topic.added": "新しいトピックが追加されました",
+      "translation.copied": "翻訳結果をコピーしました",
       "upgrade.success.button": "再起動",
       "upgrade.success.content": "アップグレードを完了するためにアプリケーションを再起動してください",
       "upgrade.success.title": "アップグレードに成功しました",
@@ -919,7 +920,9 @@
           "syncError": "バックアップエラー",
           "syncStatus": "バックアップ状態",
           "title": "WebDAV",
-          "user": "WebDAVユーザー"
+          "user": "WebDAVユーザー",
+          "maxBackups": "最大バックアップ数",
+          "maxBackups.unlimited": "無制限"
         },
         "yuque": {
           "check": {
@@ -1229,6 +1232,12 @@
         "api_key": "APIキー",
         "api_key.tip": "複数のキーはカンマで区切ります",
         "api_version": "APIバージョン",
+        "basic_auth": "HTTP 認証",
+        "basic_auth.tip": "サーバー展開によるインスタンスに適用されます（ドキュメントを参照）。現在はBasicスキーム（RFC7617）のみをサポートしています。",
+        "basic_auth.user_name": "ユーザー名",
+        "basic_auth.user_name.tip": "空欄で無効化",
+        "basic_auth.password": "パスワード",
+        "basic_auth.password.tip": "",
         "charge": "充電",
         "check": "チェック",
         "check_all_keys": "すべてのキーをチェック",
@@ -1364,7 +1373,7 @@
         "content_limit": "内容の長さ制限",
         "content_limit_tooltip": "検索結果の内容長を制限し、制限を超える内容は切り捨てられます。"
       },
-      "general.auto_check_update.title": "自動更新チェックを有効にする",
+      "general.auto_check_update.title": "自動更新",
       "quickPhrase": {
         "title": "クイックフレーズ",
         "add": "フレーズを追加",
@@ -1399,6 +1408,7 @@
         "content": "翻訳すると元のテキストが上書きされます。続行しますか？",
         "title": "翻訳確認"
       },
+      "copy": "翻訳をコピー",
       "error.failed": "翻訳に失敗しました",
       "error.not_configured": "翻訳モデルが設定されていません",
       "history": {
